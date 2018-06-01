@@ -6,6 +6,7 @@ use core\App;
 use core\Utils;
 use core\RoleUtils;
 use core\ParamUtils;
+use core\Browser;
 use app\forms\LoginForm;
 
 class LoginCtrl {
@@ -39,13 +40,11 @@ class LoginCtrl {
 
         // sprawdzenie, czy dane logowania poprawne
         // (takie informacje najczęściej przechowuje się w bazie danych)
-        if ($this->form->login == "admin" && $this->form->pass == "admin") {
-            RoleUtils::addRole('admin');
-        } else if ($this->form->login == App::getDB()->get("user", "login", [
+        if ($this->form->login == App::getDB()->get("user", "login", [
 				"password" => $this->form->pass,
 				"role_id" => 1
 			])) {
-            RoleUtils::addRole('admin');
+			RoleUtils::addRole('admin');
         } else if ($this->form->login == App::getDB()->get("user", "login", [
 				"password" => $this->form->pass,
 				"role_id" => 2
@@ -56,7 +55,20 @@ class LoginCtrl {
 				"role_id" => 3
 			])) {
             RoleUtils::addRole('user');
-        } else {
+        } else if( App::getDB()->count("user", ["login" => $this->form->login]) ) {
+			
+					$user_id = App::getDB()->get("user", "id", [
+						"login" => $this->form->login
+					]);
+					
+					App::getDB()->insert("session", [
+						"date" => date("Y-m-d H:i:s"),
+						"browser" => Browser::exactBrowserName(),
+						"ip" => Browser::getIpAddress(),
+						"user_id" => $user_id
+					]);
+				Utils::addErrorMessage('Niepoprawny login lub hasło');
+		} else {
             Utils::addErrorMessage('Niepoprawny login lub hasło');
         }
 
