@@ -9,8 +9,9 @@
 			integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
 		<link rel="stylesheet" href="{$conf->app_url}/css/style.css">
 	{/block}
+	
+	<script type="text/javascript" src="{$conf->app_url}/js/functions.js"></script>
 	{block name=js}
-		<script type="text/javascript" src="{$conf->app_url}/js/functions.js"></script>
 	{/block}
 </head>
 
