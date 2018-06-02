@@ -13,11 +13,12 @@
 
 <div class="login-page">
   <div class="form">
-    <form class="register-form">
-      <input id="id_login" type="text" name="login" value="{$form->login}" placeholder="name"/>
-      <input id="id_pass" type="password" name="pass" placeholder="password"/>
-      <input id="email" type="text" placeholder="email" value="{$form->email}" placeholder="email address"/>
-      <button>create</button>
+    <form action="{$conf->action_root}register" method="post" class="register-form">
+      <input type="text" name="reg_login" placeholder="name"/>
+      <input type="password" name="reg_password"  placeholder="password"/>
+      <input type="text" name="reg_email" placeholder="email address"/>
+      <button type="submit">create</button>
+	  <!--<input type="submit" value="create"/>-->
       <p class="message">Already registered? <a href="#">Sign In</a></p>
     </form>
     <form action="{$conf->action_root}login" method="post" class="login-form">

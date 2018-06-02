@@ -65,7 +65,7 @@ class PersonEditCtrl {
             'max_length' => 45,
             'validator_message' => 'Hasło powinno mieć od 2 do 45 znaków'
         ]);
-        $mail = $v->validateFromPost('email', [
+        $this->form->email = $v->validateFromPost('email', [
             'trim' => true,
             'required_message' => "Wprowadź email",
 			'max_length' => 45,
@@ -139,7 +139,6 @@ class PersonEditCtrl {
 			$this->form->joined = date('Y-m-d');
             // 2. Zapis danych w bazie
             try {
-
                 //2.1 Nowy rekord
                 if ($this->form->id == '') {
                     //sprawdź liczebność rekordów - nie pozwalaj przekroczyć 20

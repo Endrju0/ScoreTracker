@@ -101,5 +101,4 @@ class LoginCtrl {
         App::getSmarty()->assign('form', $this->form); // dane formularza do widoku
         App::getSmarty()->display('LoginView.tpl');
     }
-
 }

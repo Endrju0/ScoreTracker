@@ -11,6 +11,7 @@ Utils::addRoute('personListPart','PersonListCtrl');
 Utils::addRoute('loginShow',     'LoginCtrl');
 Utils::addRoute('login',         'LoginCtrl');
 Utils::addRoute('logout',        'LoginCtrl');
+Utils::addRoute('register',		 'RegisterCtrl');
 Utils::addRoute('personNew',     'PersonEditCtrl',	['admin']);
 Utils::addRoute('personEdit',    'PersonEditCtrl',	['user','admin']);
 Utils::addRoute('personSave',    'PersonEditCtrl',	['user','admin']);
