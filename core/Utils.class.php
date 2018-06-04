@@ -44,11 +44,11 @@ class Utils {
         return $url;
     }
 
-    public static function URL($action, $params = null) {       
+    public static function URL($action, $params = null) {
         return App::getConf()->action_url . self::_url_maker($action, $params);
     }
 
-    public static function relURL($action, $params = null) {       
+    public static function relURL($action, $params = null) {
         return App::getConf()->action_root . self::_url_maker($action, $params);
     }
 

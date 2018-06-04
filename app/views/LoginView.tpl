@@ -8,7 +8,7 @@
 {block name=js}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 {/block}
-	
+
 {block name=top}
 
 <div class="login-page">
@@ -18,13 +18,12 @@
       <input type="password" name="reg_password"  placeholder="password"/>
       <input type="text" name="reg_email" placeholder="email address"/>
       <button type="submit">create</button>
-	  <!--<input type="submit" value="create"/>-->
       <p class="message">Already registered? <a href="#">Sign In</a></p>
     </form>
     <form action="{$conf->action_root}login" method="post" class="login-form">
       <input id="id_login" type="text" name="login" value="{$form->login}" placeholder="username"/>
       <input id="id_pass" type="password" name="pass" placeholder="password"/>
-      <button type="submit" value="zaloguj">login</button>
+      <button type="submit">login</button>
       <p class="message">Not registered? <a href="#">Create an account</a></p>
     </form>
 {/block}
@@ -43,6 +42,6 @@
 	{/if}
 	</div>
 </div>
-
-<script type="text/javascript" src="{$conf->app_url}/js/login_functions.js"></script>
 {/block}
+
+{block name=bottom} <script type="text/javascript" src="{$conf->app_url}/js/login_functions.js"></script> {/block}

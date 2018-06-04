@@ -12,6 +12,8 @@ Utils::addRoute('loginShow',     'LoginCtrl');
 Utils::addRoute('login',         'LoginCtrl');
 Utils::addRoute('logout',        'LoginCtrl');
 Utils::addRoute('register',		 'RegisterCtrl');
+Utils::addRoute('leaderboard',  'LeaderboardCtrl',	['user','moderator','admin']);
+Utils::addRoute('joinParty',  'LeaderboardCtrl',	['user','moderator','admin']);
 Utils::addRoute('personNew',     'PersonEditCtrl',	['admin']);
 Utils::addRoute('personEdit',    'PersonEditCtrl',	['user','admin']);
 Utils::addRoute('personSave',    'PersonEditCtrl',	['user','admin']);
