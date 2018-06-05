@@ -23,6 +23,7 @@ class LeaderboardCtrl {
   private function loadUserId() {
     $this->form->uid = SessionUtils::load('sessionId', true);
   }
+
   public function checkParty() {
     $this->loadUserId();
     $pid = App::getDB()->get("user", "party_id", [
@@ -112,9 +113,8 @@ class LeaderboardCtrl {
     } else {
       Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
     }
-    $this->generateView();
+    App::getRouter()->forwardTo('leaderboard');
   }
-
 
   public function generateView() {
       App::getSmarty()->assign('partyName', $this->form->partyName);

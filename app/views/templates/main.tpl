@@ -20,6 +20,7 @@
 <div class="pure-menu pure-menu-horizontal bottom-margin">
 	<a href="{$conf->action_root}leaderboard" class="pure-menu-heading pure-menu-link">Leaderboard</a>
 	<a href="{$conf->action_root}personList" class="pure-menu-heading pure-menu-link">Lista</a>
+	<a href="{$conf->action_root}profile" class="pure-menu-heading pure-menu-link">Profil</a>
 {if count($conf->roles)>0}
 	<a href="{$conf->action_root}logout" class="pure-menu-heading pure-menu-link">Wyloguj</a>
 {else}

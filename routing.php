@@ -15,6 +15,8 @@ Utils::addRoute('register',		 'RegisterCtrl');
 Utils::addRoute('leaderboard',  'LeaderboardCtrl',	['user','moderator','admin']);
 Utils::addRoute('joinParty',  'LeaderboardCtrl',	['user','moderator','admin']);
 Utils::addRoute('createParty',  'LeaderboardCtrl',	['user','moderator','admin']);
+Utils::addRoute('profile',  'ProfileCtrl',	['user','moderator','admin']);
+Utils::addRoute('leaveParty',  'ProfileCtrl',	['user','moderator','admin']);
 Utils::addRoute('personNew',     'PersonEditCtrl',	['admin']);
 Utils::addRoute('personEdit',    'PersonEditCtrl',	['user','admin']);
 Utils::addRoute('personSave',    'PersonEditCtrl',	['user','admin']);
