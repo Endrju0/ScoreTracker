@@ -15,9 +15,9 @@
   {else}
    <div class="login-page">
       <div class="form">
-        <form action="" method="post" class="register-form">
+        <form action="{$conf->action_root}createParty" method="post" class="register-form">
 					<p class="message2">You don't have a party! Create one:</p></br>
-          <input type="text" name="partyName" placeholder="party name"/>
+          <input type="text" name="newPartyName" placeholder="party name"/>
           <button type="submit">create</button>
           <p class="message">Want to join existing one? <a href="#">Join now</a></p>
         </form>

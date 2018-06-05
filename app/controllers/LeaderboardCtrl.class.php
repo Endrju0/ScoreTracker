@@ -46,6 +46,49 @@ class LeaderboardCtrl {
     }
   }
 
+  public function action_createParty() {
+    $v = new Validator();
+
+    $this->form->newPartyName = $v->validateFromPost('newPartyName', [
+        'trim' => true,
+        'required' => true,
+        'required_message' => 'Podaj nazwę party',
+        'min_length' => 2,
+        'max_length' => 45,
+        'validator_message' => 'Party powinno mieć od 2 do 45 znaków'
+    ]);
+
+    if(App::getDB()->count("party", [
+      	"name" => $this->form->newPartyName
+      ]) > 0) {
+        Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
+      } else if (isset($this->form->newPartyName) && !empty($this->form->newPartyName)){
+        try {
+            App::getDB()->insert("party", [
+              "name" => $this->form->newPartyName
+            ]);
+            Utils::addInfoMessage('Pomyślnie utworzono party');
+            $pid = App::getDB()->get("party", "id", [
+              "name" => $this->form->newPartyName
+            ]);
+            $this->loadUserId();
+            App::getDB()->update("user", [
+                        "party_id" => $pid,
+            						"role_id" => 2
+                                        ], [
+                        "id" => $this->form->uid
+                    ]);
+            App::getRouter()->forwardTo('leaderboard');
+        } catch (\PDOException $e) {
+            Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+            if (App::getConf()->debug)
+                Utils::addErrorMessage($e->getMessage());
+        }
+      }
+
+    $this->generateView();
+  }
+
   public function action_joinParty() {
     $this->loadUserId();
     $v = new Validator();
