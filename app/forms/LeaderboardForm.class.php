@@ -8,4 +8,5 @@ class LeaderboardForm {
   public $partyName;
   public $partyList;
   public $joinParty;
+  public $trackerList;
 }

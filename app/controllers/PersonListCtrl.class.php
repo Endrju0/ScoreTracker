@@ -67,7 +67,6 @@ class PersonListCtrl {
             if (App::getConf()->debug)
                 Utils::addErrorMessage($e->getMessage());
         }
-
     }
 
     public function action_personList() {
@@ -83,4 +82,5 @@ class PersonListCtrl {
         App::getSmarty()->assign('people', $this->records);
         App::getSmarty()->display('PersonListTable.tpl');
     }
+
 }

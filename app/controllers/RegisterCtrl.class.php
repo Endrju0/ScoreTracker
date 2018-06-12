@@ -39,7 +39,7 @@ class RegisterCtrl {
         $this->form->reg_email = $v->validateFromPost('reg_email', [
             'trim' => true,
             'required_message' => "Wprowadź email",
-			      'max_length' => 45,
+            'max_length' => 45,
             'validator_message' => "Email powinen mieć od 2 do 45 znaków"
         ]);
         return !App::getMessages()->isError();
@@ -47,15 +47,15 @@ class RegisterCtrl {
 
     public function action_register() {
         if ($this->validate()) {
-		  	$this->form->reg_joined = date('Y-m-d');
+            $this->form->reg_joined = date('Y-m-d');
             try {
-        				App::getDB()->insert("user", [
-        					"login" => $this->form->reg_login,
-        					"password" => $this->form->reg_password,
-        					"email" => $this->form->reg_email,
-        					"role_id" => 3,
-        					"joined" => $this->form->reg_joined
-        				]);
+                App::getDB()->insert("user", [
+                    "login" => $this->form->reg_login,
+                    "password" => $this->form->reg_password,
+                    "email" => $this->form->reg_email,
+                    "role_id" => 3,
+                    "joined" => $this->form->reg_joined
+                ]);
                 Utils::addInfoMessage('Pomyślnie utworzono konto');
             } catch (\PDOException $e) {
                 Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
@@ -64,7 +64,6 @@ class RegisterCtrl {
             }
 
             App::getRouter()->forwardTo('login');
-
         } else {
             // 3c. Gdy błąd walidacji to pozostań na stronie
             $this->generateView();

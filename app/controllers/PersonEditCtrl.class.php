@@ -11,7 +11,7 @@ use app\forms\PersonEditForm;
 class PersonEditCtrl {
 
     private $form; //dane formularza
-	
+
     public function __construct() {
         //stworzenie potrzebnych obiektów
         $this->form = new PersonEditForm();
@@ -35,14 +35,15 @@ class PersonEditCtrl {
      *    'message_type' => error | warning | info,
      *  ]
      */
+
     public function validateSave() {
         //Pobranie id z walidacją czy istnieje (isset)
         $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
 
         // Używaj ParamUtils::getFromXXX('param',true,"...") do sprawdzenia czy parametr
         // został przesłany, -  czy ISTNIEJE (isset) - może być pusty, ale jest
-        
-        
+
+
         $v = new Validator();
 
         $this->form->login = $v->validateFromPost('login', [
@@ -53,10 +54,10 @@ class PersonEditCtrl {
             'max_length' => 30,
             'validator_message' => 'Login powinno mieć od 2 do 30 znaków'
         ]);
-        
+
         // Używaj walidatora z konfiguracją "'required' => true" aby sprawdzić,
         // czy parametr NIE JEST PUSTY (!empty)
-        
+
         $this->form->password = $v->validateFromPost('password', [
             'trim' => true,
             'required' => true,
@@ -68,7 +69,7 @@ class PersonEditCtrl {
         $this->form->email = $v->validateFromPost('email', [
             'trim' => true,
             'required_message' => "Wprowadź email",
-			'max_length' => 45,
+            'max_length' => 45,
             'validator_message' => "Email powinen mieć od 2 do 45 znaków"
         ]);
         return !App::getMessages()->isError();
@@ -136,7 +137,7 @@ class PersonEditCtrl {
 
         // 1. Walidacja danych formularza (z pobraniem)
         if ($this->validateSave()) {
-			$this->form->joined = date('Y-m-d');
+            $this->form->joined = date('Y-m-d');
             // 2. Zapis danych w bazie
             try {
                 //2.1 Nowy rekord
@@ -148,8 +149,8 @@ class PersonEditCtrl {
                             "login" => $this->form->login,
                             "password" => $this->form->password,
                             "email" => $this->form->email,
-							"role_id" => 3,
-							"joined" => $this->form->joined
+                            "role_id" => 3,
+                            "joined" => $this->form->joined
                         ]);
                     } else { //za dużo rekordów
                         // Gdy za dużo rekordów to pozostań na stronie
@@ -161,8 +162,8 @@ class PersonEditCtrl {
                     //2.2 Edycja rekordu o danym ID
                     App::getDB()->update("user", [
                         "login" => $this->form->login,
-						"password" => $this->form->password,
-						"email" => $this->form->email,
+                        "password" => $this->form->password,
+                        "email" => $this->form->email,
                             ], [
                         "id" => $this->form->id
                     ]);
