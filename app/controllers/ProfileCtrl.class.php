@@ -54,7 +54,16 @@ class ProfileCtrl {
         $this->generateView();
     }
 
+    public function generateGravatarUrl() {
+      $uid = SessionUtils::load('sessionId', true);
+      $email = App::getDB()->get("user", "email", [
+          "id" => $uid
+      ]);
+      return $gravatarUrl = 'http://gravatar.com/avatar/'.md5($email).'?d=monsterid&s=200';
+    }
+
     public function generateView() {
+        App::getSmarty()->assign('gravatar', $this->generateGravatarUrl());
         App::getSmarty()->assign('isInParty', $this->isInParty());
         App::getSmarty()->display('ProfileView.tpl');
     }

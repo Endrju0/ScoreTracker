@@ -1,6 +1,7 @@
 {extends file="main.tpl"}
 
 {block name=bottom}
+    <img src="{$gravatar}" alt="avatar"/>
     {if !$isInParty}
         Brak party
     {else}
