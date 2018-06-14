@@ -19,21 +19,25 @@ class LeaderboardCtrl {
     public function action_leaderboard() {
         $this->checkParty();
           try {
+              $pid = App::getDB()->get("user", "party_id", [
+                  "id" => $this->form->uid
+              ]);
               $this->form->trackerList = App::getDB()->select("tracker", [
                   "[>]user" => ["user_id" => "id"]
-                ], [
-                  "user.login",
-                  "tracker.wins",
-                  "tracker.amount",
-              ]);
-              for($i=0;$i<5;$i++) {
+                  ], [
+                    "user.login",
+                    "tracker.wins",
+                    "tracker.amount",
+                  ],[
+                    "user.party_id" => $pid
+                  ]);
+              for($i=0; $i<count($this->form->trackerList); $i++) {
                   if($this->form->trackerList[$i]['amount'] == 0) {
                     $this->form->trackerList[$i]['win_ratio'] = 0;
                   } else {
                     $this->form->trackerList[$i]['win_ratio'] = $this->form->trackerList[$i]['wins'] / $this->form->trackerList[$i]['amount'];
                   }
                 }
-              //$this->test = implode(" | ",$this->form->trackerList[1]);
           } catch (\PDOException $e) {
               Utils::addErrorMessage('Wystąpił błąd podczas sprawdzania party');
               if (App::getConf()->debug)
@@ -104,6 +108,8 @@ class LeaderboardCtrl {
                         ], [
                     "id" => $this->form->uid
                 ]);
+                RoleUtils::removeRole('user');
+                RoleUtils::addRole('moderator');
                 App::getRouter()->forwardTo('leaderboard');
             } catch (\PDOException $e) {
                 Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');

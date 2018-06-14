@@ -13,7 +13,7 @@ class ProfileCtrl {
     private $uid;
 
     public function __construct() {
-        
+
     }
 
     private function loadUserId() {
@@ -35,10 +35,13 @@ class ProfileCtrl {
         $this->loadUserId();
         try {
             App::getDB()->update("user", [
-                "party_id" => null
+                "party_id" => null,
+                "role_id" => 3
                     ], [
                 "id" => $this->uid
             ]);
+            RoleUtils::removeRole('moderator');
+            RoleUtils::addRole('user');
         } catch (\PDOException $e) {
             Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
             if (App::getConf()->debug)
