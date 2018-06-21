@@ -8,6 +8,7 @@ use core\RoleUtils;
 use core\ParamUtils;
 use core\Browser;
 use core\SessionUtils;
+use app\transfer\User;
 use app\forms\LoginForm;
 
 class LoginCtrl {
@@ -39,41 +40,60 @@ class LoginCtrl {
         if (App::getMessages()->isError())
             return false;
 
-        // sprawdzenie, czy dane logowania poprawne
-        // (takie informacje najczęściej przechowuje się w bazie danych)
-        if ($this->form->login == App::getDB()->get("user", "login", [
-                    "password" => $this->form->pass,
-                    "role_id" => 1
-                ])) {
-            RoleUtils::addRole('admin');
-            $this->storeId();
-        } else if ($this->form->login == App::getDB()->get("user", "login", [
-                    "password" => $this->form->pass,
-                    "role_id" => 2
-                ])) {
-            RoleUtils::addRole('moderator');
-            $this->storeId();
-        } else if ($this->form->login == App::getDB()->get("user", "login", [
-                    "password" => $this->form->pass,
-                    "role_id" => 3
-                ])) {
-            RoleUtils::addRole('user');
-            $this->storeId();
-        } else if (App::getDB()->count("user", ["login" => $this->form->login])) {
-            $user_id = App::getDB()->get("user", "id", [
-                "login" => $this->form->login
-            ]);
-
+      /*Sprawdzenie czy zmienne z formularza istnieją w bazie oraz czy pasują do siebie,
+        Jeśli wszystko jest poprawne to przydzielona jest odpowiednia rola użytkownikowi*/
+      try {
+          //sprawdzenie czy w bazie jest użytkownik z danym hasłem z formularza
+          if (App::getDB()->has("user", [
+          	"AND" => [
+          		"OR" => [
+          			"login" => $this->form->login,
+          			"email" => $this->form->login
+          		],
+          		"password" => $this->form->pass
+          	]
+          ])) {
+            //pobranie danych użytkownika po weryfikacji danych logowania
+            $profile = App::getDB()->get("user", [
+                        "id",
+                        "login",
+                      	"email",
+                      	"role_id",
+                      	"party_id"
+                      ], [
+                      	"login" => $this->form->login,
+                        "password" => $this->form->pass
+                      ]);
+            //pobranie nazwy roli z tabeli 'role' po kluczu 'role_id' z tabeli 'user'
+            $role = App::getDB()->get("role", [
+                      "role"
+                    ], [
+                      "id" => $profile['role_id'],
+                    ]);
+            //stworzenie obiektu user, który będzie przechowywany w sesji
+            $user = new User(
+                    $profile['id'],
+                    $profile['login'],
+                    $profile['email'],
+                    $profile['role_id'],
+                    $profile['party_id'],
+                    $role['role']);
+            SessionUtils::store('user', serialize($user));
+            RoleUtils::addRole($user->role);
+          } else {
+            //informacja do bazy o nieudanym logowaniu
             App::getDB()->insert("session", [
                 "date" => date("Y-m-d H:i:s"),
                 "browser" => Browser::exactBrowserName(),
-                "ip" => Browser::getIpAddress(),
-                "user_id" => $user_id
+                "ip" => Browser::getIpAddress()
             ]);
-            Utils::addErrorMessage('Niepoprawny login lub hasło');
-        } else {
-            Utils::addErrorMessage('Niepoprawny login lub hasło');
-        }
+          	Utils::addErrorMessage('Niepoprawny login lub hasło');
+          }
+      } catch (\PDOException $e) {
+          Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+          if (App::getConf()->debug)
+              Utils::addErrorMessage($e->getMessage());
+      }
 
         return !App::getMessages()->isError();
     }
@@ -86,7 +106,7 @@ class LoginCtrl {
         if ($this->validate()) {
             //zalogowany => przekieruj na główną akcję (z przekazaniem messages przez sesję)
             Utils::addErrorMessage('Poprawnie zalogowano do systemu');
-            App::getRouter()->redirectTo("personList");
+            App::getRouter()->redirectTo("leaderboard");
         } else {
             //niezalogowany => pozostań na stronie logowania
             $this->generateView();
@@ -94,18 +114,10 @@ class LoginCtrl {
     }
 
     public function action_logout() {
-        // 1. zakończenie sesji
+        //zakończenie sesji
         session_destroy();
-        // 2. idź na stronę główną - system automatycznie przekieruje do strony logowania
-        App::getRouter()->redirectTo('personList');
-    }
-
-    public function storeId() {
-        $id = App::getDB()->get("user", "id", [
-            "login" => $this->form->login,
-            "password" => $this->form->pass
-        ]);
-        SessionUtils::store('sessionId', $id);
+        //przekierowanie na strone logowania
+        App::getRouter()->redirectTo('login');
     }
 
     public function generateView() {

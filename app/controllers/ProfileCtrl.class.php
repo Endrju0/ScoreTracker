@@ -1,44 +1,39 @@
 <?php
-
 namespace app\controllers;
 
 use core\App;
 use core\Utils;
-use core\SessionUtils;
 use core\Validator;
+use core\RoleUtils;
+use core\ParamUtils;
 use app\forms\LeaderboardForm;
 
 class ProfileCtrl {
 
-    private $uid;
+    private $user;
 
     public function __construct() {
-
-    }
-
-    private function loadUserId() {
-        $this->uid = SessionUtils::load('sessionId', true);
-    }
-
-    public function isInParty() {
         $this->loadUserId();
+    }
+    private function loadUserId() {
+        $this->user = unserialize(ParamUtils::getFromSession('user'));
+    }
+    public function isInParty() {
         $pid = App::getDB()->get("user", "party_id", [
-            "id" => $this->uid
+            "id" => $this->user->id
         ]);
         if ($pid == NULL) {
             return false;
         } else
             return true;
     }
-
     public function action_leaveParty() {
-        $this->loadUserId();
         try {
             App::getDB()->update("user", [
                 "party_id" => null,
                 "role_id" => 3
                     ], [
-                "id" => $this->uid
+                "id" => $this->user->id
             ]);
             RoleUtils::removeRole('moderator');
             RoleUtils::addRole('user');
@@ -49,23 +44,18 @@ class ProfileCtrl {
         }
         $this->generateView();
     }
-
     public function action_profile() {
         $this->generateView();
     }
-
     public function generateGravatarUrl() {
-      $uid = SessionUtils::load('sessionId', true);
       $email = App::getDB()->get("user", "email", [
-          "id" => $uid
+          "id" => $this->user->id
       ]);
       return $gravatarUrl = 'http://gravatar.com/avatar/'.md5($email).'?d=monsterid&s=200';
     }
-
     public function generateView() {
         App::getSmarty()->assign('gravatar', $this->generateGravatarUrl());
         App::getSmarty()->assign('isInParty', $this->isInParty());
         App::getSmarty()->display('ProfileView.tpl');
     }
-
 }

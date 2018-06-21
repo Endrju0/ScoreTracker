@@ -11,7 +11,7 @@
                 <button type="submit" class="pure-button pure-button-primary">Filtruj</button>
             </fieldset>
         </form>
-    </div>	
+    </div>
 
 {/block}
 
@@ -19,7 +19,7 @@
 
     <div class="bottom-margin">
         <a class="pure-button button-success" href="{$conf->action_root}personNew">+ Nowa osoba</a>
-    </div>	
+    </div>
 
     <div id="table">
         {include file="PersonListTable.tpl"}

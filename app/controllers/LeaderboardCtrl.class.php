@@ -4,23 +4,26 @@ namespace app\controllers;
 
 use core\App;
 use core\Utils;
-use core\SessionUtils;
 use core\Validator;
+use core\RoleUtils;
+use core\ParamUtils;
 use app\forms\LeaderboardForm;
 
 class LeaderboardCtrl {
 
     private $form;
+    private $user;
 
     public function __construct() {
         $this->form = new LeaderboardForm();
+        $this->loadUserId();
     }
 
     public function action_leaderboard() {
         $this->checkParty();
           try {
               $pid = App::getDB()->get("user", "party_id", [
-                  "id" => $this->form->uid
+                  "id" => $this->user->id
               ]);
               $this->form->trackerList = App::getDB()->select("tracker", [
                   "[>]user" => ["user_id" => "id"]
@@ -48,13 +51,12 @@ class LeaderboardCtrl {
     }
 
     private function loadUserId() {
-        $this->form->uid = SessionUtils::load('sessionId', true);
+        $this->user = unserialize(ParamUtils::getFromSession('user'));
     }
 
     public function checkParty() {
-        $this->loadUserId();
         $pid = App::getDB()->get("user", "party_id", [
-            "id" => $this->form->uid
+            "id" => $this->user->id
         ]);
         if ($pid == NULL) {
             try {
@@ -101,12 +103,11 @@ class LeaderboardCtrl {
                 $pid = App::getDB()->get("party", "id", [
                     "name" => $this->form->newPartyName
                 ]);
-                $this->loadUserId();
                 App::getDB()->update("user", [
                     "party_id" => $pid,
                     "role_id" => 2
                         ], [
-                    "id" => $this->form->uid
+                    "id" => $this->user->id
                 ]);
                 RoleUtils::removeRole('user');
                 RoleUtils::addRole('moderator');
@@ -122,7 +123,6 @@ class LeaderboardCtrl {
     }
 
     public function action_joinParty() {
-        $this->loadUserId();
         $v = new Validator();
 
         $this->form->joinParty = $v->validateFromPost('party', [
@@ -139,7 +139,7 @@ class LeaderboardCtrl {
                 App::getDB()->update("user", [
                     "party_id" => $partyid,
                         ], [
-                    "id" => $this->form->uid
+                    "id" => $this->user->id
                 ]);
             } else {
                 Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
@@ -156,6 +156,7 @@ class LeaderboardCtrl {
         App::getSmarty()->assign('partyName', $this->form->partyName);
         App::getSmarty()->assign('partyList', $this->form->partyList);
         App::getSmarty()->assign('trackerList', $this->form->trackerList);
+        //App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('LeaderboardView.tpl');
     }
 

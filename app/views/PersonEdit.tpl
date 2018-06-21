@@ -24,7 +24,7 @@
                 </div>
             </fieldset>
             <input type="hidden" name="id" value="{$form->id}">
-        </form>	
+        </form>
     </div>
 
 {/block}

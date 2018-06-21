@@ -38,6 +38,7 @@ class RegisterCtrl {
         ]);
         $this->form->reg_email = $v->validateFromPost('reg_email', [
             'trim' => true,
+            'required' => true,
             'required_message' => "Wprowadź email",
             'max_length' => 45,
             'validator_message' => "Email powinen mieć od 2 do 45 znaków"
