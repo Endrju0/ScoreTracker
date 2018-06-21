@@ -14,12 +14,17 @@
     </head>
 
     <body style="margin: 20px;">
+      {if isset($user->id)}
         <div class="pure-menu pure-menu-horizontal bottom-margin">
             <a href="{$conf->action_root}leaderboard" class="pure-menu-heading pure-menu-link">Leaderboard</a>
-            <a href="{$conf->action_root}personList" class="pure-menu-heading pure-menu-link">Lista</a>
-            <a href="{$conf->action_root}profile" class="pure-menu-heading pure-menu-link">Profil</a> {if count($conf->roles)>0}
-            <a href="{$conf->action_root}logout" class="pure-menu-heading pure-menu-link">Wyloguj</a> {else}
-            <a href="{$conf->action_root}loginShow" class="pure-menu-heading pure-menu-link">Zaloguj</a> {/if}
+            {if isset($user->role) and $user->role == 'admin'}<a href="{$conf->action_root}personList" class="pure-menu-heading pure-menu-link">Lista</a> {/if}
+            <a href="{$conf->action_root}profile" class="pure-menu-heading pure-menu-link">Profil</a>
+            {if count($conf->roles)>0}
+              <a href="{$conf->action_root}logout" class="pure-menu-heading pure-menu-link">Wyloguj</a>
+            {else}
+              <a href="{$conf->action_root}loginShow" class="pure-menu-heading pure-menu-link">Zaloguj</a>
+            {/if}
+        {/if}
         </div>
 
         {block name=top}

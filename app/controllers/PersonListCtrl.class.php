@@ -73,6 +73,7 @@ class PersonListCtrl {
         $this->load_data();
         App::getSmarty()->assign('searchForm', $this->form); // dane formularza (wyszukiwania w tym wypadku)
         App::getSmarty()->assign('people', $this->records);  // lista rekordów z bazy danych
+        App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('PersonListFullPage.tpl');
     }
 

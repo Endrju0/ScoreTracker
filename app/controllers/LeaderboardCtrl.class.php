@@ -16,7 +16,7 @@ class LeaderboardCtrl {
 
     public function __construct() {
         $this->form = new LeaderboardForm();
-        $this->loadUserId();
+        $this->loadUser();
     }
 
     public function action_leaderboard() {
@@ -50,7 +50,7 @@ class LeaderboardCtrl {
         $this->generateView();
     }
 
-    private function loadUserId() {
+    private function loadUser() {
         $this->user = unserialize(ParamUtils::getFromSession('user'));
     }
 
@@ -156,7 +156,7 @@ class LeaderboardCtrl {
         App::getSmarty()->assign('partyName', $this->form->partyName);
         App::getSmarty()->assign('partyList', $this->form->partyList);
         App::getSmarty()->assign('trackerList', $this->form->trackerList);
-        //App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
+        App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('LeaderboardView.tpl');
     }
 

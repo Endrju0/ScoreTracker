@@ -19,7 +19,7 @@ class PersonEditCtrl {
 
     /* Walidacja danych przed zapisem (nowe dane lub edycja).
      * Poniżej pełna, możliwa konfiguracja metod walidacji:
-     *  [ 
+     *  [
      *    'trim' => true,
      *    'required' => true,
      *    'required_message' => 'message...',
@@ -185,6 +185,7 @@ class PersonEditCtrl {
 
     public function generateView() {
         App::getSmarty()->assign('form', $this->form); // dane formularza dla widoku
+        App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('PersonEdit.tpl');
     }
 

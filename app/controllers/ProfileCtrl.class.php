@@ -13,9 +13,9 @@ class ProfileCtrl {
     private $user;
 
     public function __construct() {
-        $this->loadUserId();
+        $this->loadUser();
     }
-    private function loadUserId() {
+    private function loadUser() {
         $this->user = unserialize(ParamUtils::getFromSession('user'));
     }
     public function isInParty() {
@@ -56,6 +56,7 @@ class ProfileCtrl {
     public function generateView() {
         App::getSmarty()->assign('gravatar', $this->generateGravatarUrl());
         App::getSmarty()->assign('isInParty', $this->isInParty());
+        App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('ProfileView.tpl');
     }
 }
