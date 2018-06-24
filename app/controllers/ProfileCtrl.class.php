@@ -6,35 +6,54 @@ use core\Utils;
 use core\Validator;
 use core\RoleUtils;
 use core\ParamUtils;
+use core\SessionUtils;
 use app\forms\LeaderboardForm;
 
 class ProfileCtrl {
 
     private $user;
+    private $partyName;
 
     public function __construct() {
-        $this->loadUser();
     }
+
     private function loadUser() {
         $this->user = unserialize(ParamUtils::getFromSession('user'));
     }
-    public function isInParty() {
-        $pid = App::getDB()->get("user", "party_id", [
-            "id" => $this->user->id
-        ]);
-        if ($pid == NULL) {
-            return false;
-        } else
-            return true;
+
+    private function saveUser() {
+        SessionUtils::storeObject('user', $this->user);
     }
+
+    //Sprawdzenie czy w party (funkcja dla widoku - pokazanie buttona do opuszczenia party)
+    public function isInParty() {
+       $this->loadUser();
+        if ($this->user->party_id == NULL) {
+            return false;
+        } else {
+          $this->partyName = App::getDB()->get("party", "name", [
+              "id" => $this->user->party_id
+          ]);
+          return true;
+        }
+    }
+
     public function action_leaveParty() {
         try {
+            $this->loadUser();
             App::getDB()->update("user", [
                 "party_id" => null,
                 "role_id" => 3
                     ], [
                 "id" => $this->user->id
             ]);
+
+            $this->user->party_id = NULL;
+            $this->user->role_id = 3;
+            $this->user->role = App::getDB()->get("role", "role", [
+                "id" => $this->user->role_id
+            ]);
+            $this->saveUser();
             RoleUtils::removeRole('moderator');
             RoleUtils::addRole('user');
         } catch (\PDOException $e) {
@@ -44,18 +63,20 @@ class ProfileCtrl {
         }
         $this->generateView();
     }
+
     public function action_profile() {
         $this->generateView();
     }
+
     public function generateGravatarUrl() {
-      $email = App::getDB()->get("user", "email", [
-          "id" => $this->user->id
-      ]);
-      return $gravatarUrl = 'http://gravatar.com/avatar/'.md5($email).'?d=monsterid&s=200';
+      $this->loadUser();
+      return $gravatarUrl = 'http://gravatar.com/avatar/'.md5($this->user->email).'?d=monsterid&s=200';
     }
+
     public function generateView() {
         App::getSmarty()->assign('gravatar', $this->generateGravatarUrl());
         App::getSmarty()->assign('isInParty', $this->isInParty());
+        App::getSmarty()->assign('partyName', $this->partyName);
         App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('ProfileView.tpl');
     }

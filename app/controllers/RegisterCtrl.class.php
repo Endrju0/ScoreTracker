@@ -43,19 +43,26 @@ class RegisterCtrl {
             'max_length' => 45,
             'validator_message' => "Email powinen mieć od 2 do 45 znaków"
         ]);
+        if (App::getDB()->has("user", [
+          "OR" => [
+            "login" => $this->form->reg_login,
+            "email" => $this->form->reg_email
+          ]
+        ])) Utils::addErrorMessage('Nazwa użytkownika bądź email jest już zajęty!');
+
         return !App::getMessages()->isError();
     }
 
     public function action_register() {
         if ($this->validate()) {
-            $this->form->reg_joined = date('Y-m-d');
+            $this->form->reg_registration_date = date('Y-m-d');
             try {
                 App::getDB()->insert("user", [
                     "login" => $this->form->reg_login,
                     "password" => $this->form->reg_password,
                     "email" => $this->form->reg_email,
                     "role_id" => 3,
-                    "joined" => $this->form->reg_joined
+                    "registration_date" => $this->form->reg_registration_date
                 ]);
                 Utils::addInfoMessage('Pomyślnie utworzono konto');
             } catch (\PDOException $e) {

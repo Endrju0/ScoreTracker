@@ -6,5 +6,5 @@ class RegisterForm {
 	public $reg_login;
 	public $reg_password;
 	public $reg_email;
-	public $reg_joined;
+	public $reg_registration_date;
 }

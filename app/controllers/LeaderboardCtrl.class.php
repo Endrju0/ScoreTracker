@@ -7,6 +7,7 @@ use core\Utils;
 use core\Validator;
 use core\RoleUtils;
 use core\ParamUtils;
+use core\SessionUtils;
 use app\forms\LeaderboardForm;
 
 class LeaderboardCtrl {
@@ -16,12 +17,30 @@ class LeaderboardCtrl {
 
     public function __construct() {
         $this->form = new LeaderboardForm();
-        $this->loadUser();
+    }
+
+    private function loadUser() {
+      $this->user = unserialize(ParamUtils::getFromSession('user'));
+    }
+
+    private function saveUser() {
+      SessionUtils::storeObject('user', $this->user);
     }
 
     public function action_leaderboard() {
         $this->checkParty();
           try {
+              $this->loadUser();
+              if (App::getConf()->debug) {
+                Utils::addInfoMessage('--------LEADERBOARD--------');
+                Utils::addInfoMessage('user id: '.$this->user->id.' ;');
+                Utils::addInfoMessage('user login: '.$this->user->login.' ;');
+                Utils::addInfoMessage('user email: '.$this->user->email.' ;');
+                Utils::addInfoMessage('user role_id: '.$this->user->role_id.' ;');
+                Utils::addInfoMessage('user party_id: '.$this->user->party_id.' ;');
+                Utils::addInfoMessage('user role: '.$this->user->role.' ;');
+                Utils::addInfoMessage('user last_login: '.$this->user->last_login.' ;');
+              }
               $pid = App::getDB()->get("user", "party_id", [
                   "id" => $this->user->id
               ]);
@@ -50,16 +69,16 @@ class LeaderboardCtrl {
         $this->generateView();
     }
 
-    private function loadUser() {
-        $this->user = unserialize(ParamUtils::getFromSession('user'));
-    }
 
+    /*Funkcja sprawdzająca czy user jest w party - jeśli jest to nie wyświetlamy
+      formularza odpowiadającego za dołaczenie/założenie party*/
     public function checkParty() {
-        $pid = App::getDB()->get("user", "party_id", [
-            "id" => $this->user->id
-        ]);
-        if ($pid == NULL) {
+        $this->loadUser();
+
+        //Sprawdzenie czy user jest w party
+        if ($this->user->party_id == NULL) {
             try {
+                //Jeśli nie to wyświetlamy mu listę dostępnych do wyboru
                 $this->form->partyList = App::getDB()->select("party", [
                     "id",
                     "name"
@@ -69,18 +88,19 @@ class LeaderboardCtrl {
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }
-            return false;
         } else {
+            //Jeśli jest w party to wyświetlamy jej nazwę zamiast formularza
             $this->form->partyName = App::getDB()->get("party", "name", [
-                "id" => $pid
+                "id" => $this->user->party_id
             ]);
-            return true;
         }
+        $this->saveUser();
     }
 
     public function action_createParty() {
         $v = new Validator();
 
+        //pobranie nazwy party, które chcemy założyć
         $this->form->newPartyName = $v->validateFromPost('newPartyName', [
             'trim' => true,
             'required' => true,
@@ -90,25 +110,41 @@ class LeaderboardCtrl {
             'validator_message' => 'Party powinno mieć od 2 do 45 znaków'
         ]);
 
+        /*Sprawdzamy czy takie party istnieje, jeśli tak to przechodzimy do
+          wyświetlenia widoku*/
         if (App::getDB()->count("party", [
                     "name" => $this->form->newPartyName
                 ]) > 0) {
             Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
         } else if (isset($this->form->newPartyName) && !empty($this->form->newPartyName)) {
             try {
+                //Dodanie nowego party do tabeli "party"
                 App::getDB()->insert("party", [
                     "name" => $this->form->newPartyName
                 ]);
                 Utils::addInfoMessage('Pomyślnie utworzono party');
-                $pid = App::getDB()->get("party", "id", [
+                $this->loadUser();
+
+                //Pobranie id od party o danej nazwie
+                $this->user->party_id = App::getDB()->get("party", "id", [
                     "name" => $this->form->newPartyName
                 ]);
+
+                //Zaktualizowanie informacji w tabeli "user" o party danego użytkownika
                 App::getDB()->update("user", [
-                    "party_id" => $pid,
-                    "role_id" => 2
+                    "party_id" => $this->user->party_id,
+                    "role_id" => 2, //rola moderatora
+                    "party_member_since" => date("Y-m-d H:i:s")
                         ], [
                     "id" => $this->user->id
                 ]);
+
+                //Zapisanie roli do sesji
+                $this->user->role_id = 2;
+                $this->user->role = App::getDB()->get("role", "role", [
+                    "id" => $this->user->role_id
+                ]);
+                $this->saveUser();
                 RoleUtils::removeRole('user');
                 RoleUtils::addRole('moderator');
                 App::getRouter()->forwardTo('leaderboard');
@@ -125,22 +161,27 @@ class LeaderboardCtrl {
     public function action_joinParty() {
         $v = new Validator();
 
+        //pobranie nazwy party do którego chcemy dołączyć z formularza
         $this->form->joinParty = $v->validateFromPost('party', [
             'trim' => true,
             'required' => true
         ]);
         try {
+            $this->loadUser();
+            //sprawdzenie czy takie party istnieje, jeśli tak to aktualizacja bazy i sesji
             if (App::getDB()->count("party", [
                         "name" => $this->form->joinParty
                     ]) > 0) {
-                $partyid = App::getDB()->get("party", "id", [
+                $this->user->party_id = App::getDB()->get("party", "id", [
                     "name" => $this->form->joinParty
                 ]);
                 App::getDB()->update("user", [
-                    "party_id" => $partyid,
+                    "party_id" => $this->user->party_id,
+                    "party_member_since" => date("Y-m-d H:i:s")
                         ], [
                     "id" => $this->user->id
                 ]);
+                $this->saveUser();
             } else {
                 Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
             }

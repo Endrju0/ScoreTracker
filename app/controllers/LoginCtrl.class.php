@@ -59,17 +59,20 @@ class LoginCtrl {
                         "login",
                       	"email",
                       	"role_id",
-                      	"party_id"
+                      	"party_id",
+                        "last_login"
                       ], [
                       	"login" => $this->form->login,
                         "password" => $this->form->pass
                       ]);
+
             //pobranie nazwy roli z tabeli 'role' po kluczu 'role_id' z tabeli 'user'
             $role = App::getDB()->get("role", [
                       "role"
                     ], [
                       "id" => $profile['role_id'],
                     ]);
+
             //stworzenie obiektu user, który będzie przechowywany w sesji
             $user = new User(
                     $profile['id'],
@@ -77,8 +80,18 @@ class LoginCtrl {
                     $profile['email'],
                     $profile['role_id'],
                     $profile['party_id'],
-                    $role['role']);
+                    $role['role'],
+                    $profile['last_login']);
             SessionUtils::store('user', serialize($user));
+
+            /*Zaktualizowanie informacji o ostatnim logowaniu
+             (dopiero po utworzeniu obiektu w sesji, bo chodzi o ostatnie nie aktualne)*/
+            App::getDB()->update("user", [
+              "last_login" => date("Y-m-d H:i:s")
+            ], [
+              "id" => $profile['id']
+            ]);
+
             RoleUtils::addRole($user->role);
           } else {
             //informacja do bazy o nieudanym logowaniu

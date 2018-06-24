@@ -7,4 +7,5 @@ class LeaderboardForm {
   public $partyName; //nazwa party z bazy po id party
   public $partyList; //list wszystkich dostępnych party
   public $joinParty; //nazwa party z formularza do dołączenia do istniejącego
+  public $trackerList;
 }
