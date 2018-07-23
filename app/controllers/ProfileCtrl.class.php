@@ -41,12 +41,32 @@ class ProfileCtrl {
     public function action_leaveParty() {
         try {
             $this->loadUser();
+
+            //przywrócenie ustawień "domyślnych" użytkownika
             App::getDB()->update("user", [
                 "party_id" => null,
+                "party_member_since" => null,
                 "role_id" => 3
                     ], [
                 "id" => $this->user->id
             ]);
+
+            //nadanie praw moderatora członkowi z największym stażem
+            if($this->user->role_id == 2) {
+              $oldestMemberId = App::getDB()->get("user", [
+                "id"
+              ], [
+                "OR" => [
+                  "party_id" => $this->user->party_id,
+                  "party_member_since" => "ASC"
+                ]
+              ]);
+              App::getDB()->update("user", [
+                    "role_id" => 2
+                        ], [
+                    "id" => $oldestMemberId
+                ]);
+            }
 
             $this->user->party_id = NULL;
             $this->user->role_id = 3;

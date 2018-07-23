@@ -27,6 +27,7 @@ class LeaderboardCtrl {
       SessionUtils::storeObject('user', $this->user);
     }
 
+    /*pobranie zawartości tabeli wyników i przekazanie jej do $this->form->trackerList*/
     public function action_leaderboard() {
         $this->checkParty();
           try {
@@ -45,19 +46,25 @@ class LeaderboardCtrl {
                   "id" => $this->user->id
               ]);
               $this->form->trackerList = App::getDB()->select("tracker", [
-                  "[>]user" => ["user_id" => "id"]
+                  "[>]user" => ["user_id" => "id"],
+                  "[>]season" => ["season_id" => "id"]
                   ], [
+                    "tracker.id",
                     "user.login",
                     "tracker.wins",
-                    "tracker.amount",
+                    "tracker.amount"
                   ],[
-                    "user.party_id" => $pid
+                  "AND" => [
+                    "user.party_id" => $pid,
+                    "season.party_id" => $pid,
+                    "season.active" => 1
+                  ]
                   ]);
               for($i=0; $i<count($this->form->trackerList); $i++) {
                   if($this->form->trackerList[$i]['amount'] == 0) {
                     $this->form->trackerList[$i]['win_ratio'] = 0;
                   } else {
-                    $this->form->trackerList[$i]['win_ratio'] = $this->form->trackerList[$i]['wins'] / $this->form->trackerList[$i]['amount'];
+                    $this->form->trackerList[$i]['win_ratio'] = round($this->form->trackerList[$i]['wins'] / $this->form->trackerList[$i]['amount'],2,PHP_ROUND_HALF_DOWN);
                   }
                 }
           } catch (\PDOException $e) {
@@ -69,6 +76,54 @@ class LeaderboardCtrl {
         $this->generateView();
     }
 
+    public function action_incWins() { //zwiększenie wygranych o 1
+      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      if(!App::getMessages()->isError()) {
+        $this->form->trackerList = App::getDB()->update("tracker", [
+              "wins[+]" => 1,
+              "amount[+]" => 1
+            ],[
+              "id" => $this->form->id
+            ]);
+      }
+      App::getRouter()->forwardTo('leaderboard');
+    }
+
+    public function action_incAmount() { //zwiększenie liczby gier o 1
+      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      if(!App::getMessages()->isError()) {
+        $this->form->trackerList = App::getDB()->update("tracker", [
+              "amount[+]" => 1
+            ],[
+              "id" => $this->form->id
+            ]);
+      }
+      App::getRouter()->forwardTo('leaderboard');
+    }
+
+    public function action_decWins() { //zmniejszenie wygranych o 1
+      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      if(!App::getMessages()->isError()) {
+        $this->form->trackerList = App::getDB()->update("tracker", [
+              "wins[-]" => 1,
+            ],[
+              "id" => $this->form->id
+            ]);
+      }
+      App::getRouter()->forwardTo('leaderboard');
+    }
+
+    public function action_decAmount() { //zmniejszenie liczby gier o 1
+      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      if(!App::getMessages()->isError()) {
+        $this->form->trackerList = App::getDB()->update("tracker", [
+              "amount[-]" => 1
+            ],[
+              "id" => $this->form->id
+            ]);
+      }
+      App::getRouter()->forwardTo('leaderboard');
+    }
 
     /*Funkcja sprawdzająca czy user jest w party - jeśli jest to nie wyświetlamy
       formularza odpowiadającego za dołaczenie/założenie party*/

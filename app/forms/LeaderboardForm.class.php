@@ -8,4 +8,5 @@ class LeaderboardForm {
   public $partyList; //list wszystkich dostępnych party
   public $joinParty; //nazwa party z formularza do dołączenia do istniejącego
   public $trackerList;
+  public $id;
 }

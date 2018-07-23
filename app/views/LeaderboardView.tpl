@@ -7,6 +7,37 @@
 {block name=bottom}
     {if $partyName != null}
         Party: {$partyName}
+        {if $user->role == moderator OR $user->role == admin}
+          <div id="modpanel">
+
+          </div>
+          <table class="pure-table pure-table-bordered">
+              <thead>
+                  <tr>
+                      <th>Login</th>
+                      <th colspan="3">Wins</th>
+                      <th colspan="3">Amount</th>
+                      <th>Win Ratio</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {foreach $trackerList as $t}
+                      {strip}
+                          <tr>
+                              <td>{$t["login"]}</td>
+                              <td>{$t["wins"]}</td>
+                              <td><a class="button-small pure-button" href="{$conf->action_url}incWins/{$t['id']}">+</a></td>
+                              <td><a class="button-small pure-button" href="{$conf->action_url}decWins/{$t['id']}">-</a></td>
+                              <td>{$t["amount"]}</td>
+                              <td><a class="button-small pure-button" href="{$conf->action_url}incAmount/{$t['id']}">+</a></td>
+                              <td><a class="button-small pure-button" href="{$conf->action_url}decAmount/{$t['id']}">-</a></td>
+                              <td>{$t["win_ratio"]}</td>
+                          </tr>
+                      {/strip}
+                  {/foreach}
+              </tbody>
+          </table>
+        {else}
         <table class="pure-table pure-table-bordered">
             <thead>
                 <tr>
@@ -29,7 +60,7 @@
                 {/foreach}
             </tbody>
         </table>
-
+        {/if}
     {else}
         <div class="login-page">
             <div class="form">
