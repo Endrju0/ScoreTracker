@@ -3,5 +3,5 @@
 namespace app\forms;
 
 class PersonSearchForm {
-	public $password;
-} 
+	public $login;
+}

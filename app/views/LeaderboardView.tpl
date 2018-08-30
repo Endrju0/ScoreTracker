@@ -1,5 +1,7 @@
-{extends file="main.tpl"} {block name=styles}
+{extends file="main.tpl"}
+{block name=resources}
     <link rel="stylesheet" href="{$conf->app_url}/css/party_style.css">
+    <link rel="stylesheet" href="{$conf->app_url}/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"> {/block} {block name=js}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 {/block}
@@ -8,8 +10,8 @@
     {if $partyName != null}
         Party: {$partyName}
         {if $user->role == moderator OR $user->role == admin}
-          <div id="modpanel">
-
+          <div id="modpanel" class="pure-menu-list">
+            <a href="{$conf->action_root}seasonManagement" class="pure-menu pure-menu-link">Zarządzanie sezonem</a>
           </div>
           <table class="pure-table pure-table-bordered">
               <thead>
@@ -26,11 +28,21 @@
                           <tr>
                               <td>{$t["login"]}</td>
                               <td>{$t["wins"]}</td>
-                              <td><a class="button-small pure-button" href="{$conf->action_url}incWins/{$t['id']}">+</a></td>
-                              <td><a class="button-small pure-button" href="{$conf->action_url}decWins/{$t['id']}">-</a></td>
+                              <form action="{$conf->action_root}incWins" method="post">
+                                <td><button name="id" value="{$t['id']}" type="submit" class="button-small pure-button">+</button></td>
+                              </form>
+                              <form action="{$conf->action_root}decWins" method="post">
+                                <input type="hidden" name="validateValue" value="{$t['wins']}" />
+                                <td><button name="id" value="{$t['id']}" type="submit" class="button-small pure-button">-</button></td>
+                              </form>
                               <td>{$t["amount"]}</td>
-                              <td><a class="button-small pure-button" href="{$conf->action_url}incAmount/{$t['id']}">+</a></td>
-                              <td><a class="button-small pure-button" href="{$conf->action_url}decAmount/{$t['id']}">-</a></td>
+                              <form action="{$conf->action_root}incAmount" method="post">
+                                <td><button name="id" value="{$t['id']}" type="submit" class="button-small pure-button">+</button></td>
+                              </form>
+                              <form action="{$conf->action_root}decAmount" method="post">
+                                <input type="hidden" name="validateValue" value="{$t['amount']}" />
+                                <td><button name="id" value="{$t['id']}" type="submit" class="button-small pure-button">-</button></td>
+                              </form>
                               <td>{$t["win_ratio"]}</td>
                           </tr>
                       {/strip}
@@ -85,6 +97,6 @@
                 </form>
             </div>
         </div>
-        <script type="text/javascript" src="{$conf->app_url}/js/login_functions.js"></script>
     {/if}
+    <script type="text/javascript" src="{$conf->app_url}/js/login_functions.js"></script>
 {/block}

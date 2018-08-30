@@ -77,7 +77,7 @@ class LeaderboardCtrl {
     }
 
     public function action_incWins() { //zwiększenie wygranych o 1
-      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
               "wins[+]" => 1,
@@ -90,7 +90,7 @@ class LeaderboardCtrl {
     }
 
     public function action_incAmount() { //zwiększenie liczby gier o 1
-      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
               "amount[+]" => 1
@@ -102,7 +102,15 @@ class LeaderboardCtrl {
     }
 
     public function action_decWins() { //zmniejszenie wygranych o 1
-      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      //pobranie id rekordu z tabeli 'tracker', który będziemy aktualizować
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      //pobranie ilości wygranych
+      $validateValue = ParamUtils::getFromPost('validateValue', true, 'Błędne wywołanie aplikacji');
+
+      //jeśli wygranych jest mniej niż 1 to kończymy akcję
+      if($validateValue < 1)
+      Utils::addErrorMessage('Ilość wygranych nie może być mniejsza od 0!');
+
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
               "wins[-]" => 1,
@@ -114,7 +122,15 @@ class LeaderboardCtrl {
     }
 
     public function action_decAmount() { //zmniejszenie liczby gier o 1
-      $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+      //pobranie id rekordu z tabeli 'tracker', który będziemy aktualizować
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      //pobranie ilości gier
+      $validateValue = ParamUtils::getFromPost('validateValue', true, 'Błędne wywołanie aplikacji');
+
+      //jeśli gier jest mniej niż 1 to kończymy akcję
+      if($validateValue < 1)
+      Utils::addErrorMessage('Ilość gier nie może być mniejsza od 0!');
+
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
               "amount[-]" => 1

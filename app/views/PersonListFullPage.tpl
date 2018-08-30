@@ -7,7 +7,7 @@
                 return false;">
             <legend>Opcje wyszukiwania</legend>
             <fieldset>
-                <input type="text" placeholder="nazwisko" name="sf_password" value="{$searchForm->password}" /><br />
+                <input type="text" placeholder="login" name="sf_login" value="{$searchForm->login}" /><br />
                 <button type="submit" class="pure-button pure-button-primary">Filtruj</button>
             </fieldset>
         </form>
