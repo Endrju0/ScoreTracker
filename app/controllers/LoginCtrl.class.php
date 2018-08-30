@@ -24,6 +24,23 @@ class LoginCtrl {
         $this->form->login = ParamUtils::getFromRequest('login');
         $this->form->pass = ParamUtils::getFromRequest('pass');
 
+        if(App::getDB()->has("session", [
+      		"AND" => [
+            "browser" => Browser::exactBrowserName(),
+            "ip" => Browser::getIpAddress()
+      		]
+        ])) {
+            if(App::getDB()->count("session", [
+              "AND" => [
+                "browser" => Browser::exactBrowserName(),
+                "ip" => Browser::getIpAddress(),
+                "date[<>]" => [date('Y-m-d H:i:s', strtotime('-5 minutes')), date("Y-m-d H:i:s")]
+          		]
+            ]) > 4) {
+              Utils::addErrorMessage('Zbyt wiele prób logowania. Poczekaj 5 minut.');
+            }
+        }
+
         //nie ma sensu walidować dalej, gdy brak parametrów
         if (!isset($this->form->login))
             return false;
