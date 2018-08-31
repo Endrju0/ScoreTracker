@@ -2,7 +2,7 @@
 {block name=resources}
     <link rel="stylesheet" href="{$conf->app_url}/css/party_style.css">
     <link rel="stylesheet" href="{$conf->app_url}/css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous"> {/block} {block name=js}
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 {/block}
 
@@ -46,7 +46,24 @@
                               <td>{$t["win_ratio"]}</td>
                           </tr>
                       {/strip}
-                  {/foreach}
+                      {/foreach}
+                      <tr>
+                        <form action="{$conf->action_root}addMemberToSeason" method="post">
+                          <td colspan="7" id="memberCell">
+                            <input list="members" name="memberList" id="memberList">
+                            <datalist id="members">
+                              {strip}
+                                {foreach $selectableUsers as $sl}
+                                  <option value="{$sl['login']}">
+                                {/foreach}
+                              {/strip}
+                            </td>
+                          </datalist>
+                          <td>
+                            <button type="submit" class="button-small pure-button">add</button>
+                          </td>
+                        </form>
+                      </tr>
               </tbody>
           </table>
         {else}

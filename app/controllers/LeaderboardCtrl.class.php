@@ -14,6 +14,7 @@ class LeaderboardCtrl {
 
     private $form;
     private $user;
+    private $selectableUsers;
 
     public function __construct() {
         $this->form = new LeaderboardForm();
@@ -67,6 +68,46 @@ class LeaderboardCtrl {
                     $this->form->trackerList[$i]['win_ratio'] = round($this->form->trackerList[$i]['wins'] / $this->form->trackerList[$i]['amount'],2,PHP_ROUND_HALF_DOWN);
                   }
                 }
+          } catch (\PDOException $e) {
+              Utils::addErrorMessage('Wystąpił błąd podczas sprawdzania party');
+              if (App::getConf()->debug)
+                  Utils::addErrorMessage($e->getMessage());
+          }
+
+          //Dodanie nowego użytkownika do tabeli tracker
+         try {
+                //zwraca id aktywnego sezonu dla danego party
+                $activeSeasonId = App::getDB()->get("season", "id", [
+                    "AND" => [
+                      "active" => 1,
+                      "party_id" => $this->user->party_id
+                    ]
+                  ]);
+
+                  //zwraca id wszystkich osób, którzy brali jakikolwiek udział w dowolnym sezonie
+                  $conditionalToSearch = App::getDB()->select("tracker", [
+                       "user_id"
+                   ]);
+
+                   //konwersja tablicy wielowymiarowej do dwuwymiarowej, gdyż medoo nie przyjmuje wielowymiarowych
+                   foreach ($conditionalToSearch as $key => $value){
+                        $conditionalToSearch[$key] = $value['user_id'];
+                   }
+
+                   //zwraca login tych, którzy nie brali udziału w obecnym sezonie
+                  $this->selectableUsers = App::getDB()->select("user", [
+                     "[>]tracker" => ["id" => "user_id"]
+                  ], [
+                      "user.id",
+                      "user.login"
+                  ], [
+                    "OR" => [
+                      "tracker.season_id[!]" => $activeSeasonId, //id tych sezonów, które nie są obecnym
+                      "user.id[!]" => $conditionalToSearch //wszystkie osoby, które nigdy nie brały udziału w grupach
+                    ],
+                    "user.party_id" => $this->user->party_id
+                  ]);
+
           } catch (\PDOException $e) {
               Utils::addErrorMessage('Wystąpił błąd podczas sprawdzania party');
               if (App::getConf()->debug)
@@ -137,6 +178,56 @@ class LeaderboardCtrl {
             ],[
               "id" => $this->form->id
             ]);
+      }
+      App::getRouter()->forwardTo('leaderboard');
+    }
+
+    public function action_addMemberToSeason() {
+      $v = new Validator();
+      //pobranie nazwy party do którego chcemy dołączyć z formularza
+      $this->form->member = $v->validateFromPost('memberList', [
+          'trim' => true,
+          'required' => true,
+          'required_message' => 'Podaj login członka',
+          'min_length' => 2,
+          'max_length' => 30,
+          'validator_message' => 'Login powinien mieć od 2 do 30 znaków'
+      ]);
+      try {
+          $this->loadUser();
+          //sprawdzenie czy taki użytkownik istnieje, jeśli tak to dodanie go do tabeli tracker
+          if (App::getDB()->has("user", [
+          	"AND" => [
+              "login" => $this->form->member,
+              "party_id" => $this->user->party_id
+        	   ]
+        	])) {
+             $tmpId = App::getDB()->select("user", [
+                "id"
+             ], [
+                "login" => $this->form->member
+             ]);
+
+             $tmpSeason = App::getDB()->select("season", [
+                "id"
+             ], [
+                "active" => 1,
+                "party_id" => $this->user->party_id
+             ]);
+
+            App::getDB()->insert("tracker", [
+            	"user_id" => $tmpId[0]["id"],
+            	"wins" => 0,
+            	"amount" => 0,
+              "season_id" => $tmpSeason[0]["id"]
+            ]);
+          } else {
+              Utils::addErrorMessage('Nie ma takiego członka w party');
+          }
+      } catch (\PDOException $e) {
+          Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+          if (App::getConf()->debug)
+              Utils::addErrorMessage($e->getMessage());
       }
       App::getRouter()->forwardTo('leaderboard');
     }
@@ -268,6 +359,7 @@ class LeaderboardCtrl {
         App::getSmarty()->assign('partyName', $this->form->partyName);
         App::getSmarty()->assign('partyList', $this->form->partyList);
         App::getSmarty()->assign('trackerList', $this->form->trackerList);
+        App::getSmarty()->assign('selectableUsers', $this->selectableUsers);
         App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('LeaderboardView.tpl');
     }

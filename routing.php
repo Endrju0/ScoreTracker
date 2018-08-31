@@ -19,6 +19,7 @@ Utils::addRoute('incWins',  'LeaderboardCtrl',	['moderator','admin']);
 Utils::addRoute('incAmount',  'LeaderboardCtrl',	['moderator','admin']);
 Utils::addRoute('decWins',  'LeaderboardCtrl',	['moderator','admin']);
 Utils::addRoute('decAmount',  'LeaderboardCtrl',	['moderator','admin']);
+Utils::addRoute('addMemberToSeason',  'LeaderboardCtrl',	['moderator','admin']);
 Utils::addRoute('seasonManagement',  'SeasonManagementCtrl',	['moderator','admin']);
 Utils::addRoute('newSeason',  'SeasonManagementCtrl',	['moderator','admin']);
 Utils::addRoute('setActiveSeason',  'SeasonManagementCtrl',	['moderator','admin']);

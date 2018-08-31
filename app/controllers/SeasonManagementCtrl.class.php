@@ -121,20 +121,6 @@ class SeasonManagementCtrl {
                 ],[
                   "id" => $oldActiveSeasonId
                 ]);
-            //przydzielenie każdemu członkowi party zerowych statystyk w nowym sezonie
-            /*App::getDB()->insert("tracker", [
-                "[>]user" => ["user_id" => "id"],
-                "[>]season" => ["season_id" => "id"]
-                ], [
-                  "tracker.wins" => 0,
-                  "tracker.amount" => 0
-                ],[
-                "AND" => [
-                  "user.party_id" => $this->user->party_id,
-                  "season.party_id" => $this->user->party_id,
-                  "season.active" => 1
-                ]
-              ]);*/
             Utils::addInfoMessage('New season successfully added!');
         } catch (\PDOException $e) {
             Utils::addErrorMessage('Unexpected error!');
