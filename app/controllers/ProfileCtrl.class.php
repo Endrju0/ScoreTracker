@@ -40,42 +40,85 @@ class ProfileCtrl {
 
     public function action_leaveParty() {
         try {
-            $this->loadUser();
-
-            //przywrócenie ustawień "domyślnych" użytkownika
+          $this->loadUser();
+          if(RoleUtils::inRole('admin')) {
             App::getDB()->update("user", [
                 "party_id" => null,
-                "party_member_since" => null,
-                "role_id" => 3
+                "party_member_since" => null
                     ], [
                 "id" => $this->user->id
             ]);
+          } else { //wszyscy, którzy nie są adminem
 
-            //nadanie praw moderatora członkowi z największym stażem
-            if($this->user->role_id == 2) {
-              $oldestMemberId = App::getDB()->get("user", [
-                "id"
-              ], [
-                "OR" => [
-                  "party_id" => $this->user->party_id,
-                  "party_member_since" => "ASC"
-                ]
-              ]);
-              App::getDB()->update("user", [
+                if(App::getDB()->count("user", [
+              			"party_id" => $this->user->party_id,
+                	]) < 2) { //usunięcie grupy gdy zostanie tylko 1 osoba
+
+                  if(App::getDB()->has("season", [
+                			"party_id" => $this->user->party_id,
+                  	])) {
+                      $tmp = App::getDB()->select("season", [
+                        "id"
+                      ], [
+                        "party_id" => $this->user->party_id
+                      ]);
+                      $seasonsOfGroup = array_column($tmp, 'id');
+
+                      App::getDB()->delete("tracker", [
+                        "season_id" =>  $seasonsOfGroup
+                      ]);
+                      App::getDB()->delete("season", [
+                        "party_id" =>  $this->user->party_id
+                      ]);
+                    }
+
+                    App::getDB()->query("SET FOREIGN_KEY_CHECKS=0");
+
+                    App::getDB()->delete("party", [
+                    		"id" =>  $this->user->party_id
+                    ]);
+
+                    App::getDB()->query("SET FOREIGN_KEY_CHECKS=1");
+
+                }
+                if ($this->user->role_id == 2) { //przekazanie moderatora najstarszemu użytkownikowi
+                  //pobranie id najstarszego użytkownika (user) w party
+                  $oldestMember = App::getDB()->get("user", [
+                  	"id"
+                  ], [
+                    "AND" => [
+                      "party_id" => $this->user->party_id,
+                      "role_id" => 3
+                    ],
+                    "ORDER" => "party_member_since"
+                  ]);
+
+                  App::getDB()->update("user", [
                     "role_id" => 2
-                        ], [
-                    "id" => $oldestMemberId
-                ]);
-            }
+                  ], [
+                    "id" => $oldestMember['id']
+                  ]);
 
-            $this->user->party_id = NULL;
-            $this->user->role_id = 3;
-            $this->user->role = App::getDB()->get("role", "role", [
-                "id" => $this->user->role_id
+                }
+            //opuszczenie grupy
+            App::getDB()->delete("tracker", [
+              "user_id" => $this->user->id
             ]);
-            $this->saveUser();
+            //wyzerowanie informacji dotyczacych grupy
+            App::getDB()->update("user", [
+              "party_id" => null,
+              "party_member_since" => null,
+              "role_id" => 3
+            ], [
+              "id" => $this->user->id
+            ]);
+            $this->user->role_id = 3;
+            $this->user->role = 'user';
             RoleUtils::removeRole('moderator');
             RoleUtils::addRole('user');
+          }
+          $this->user->party_id = NULL;
+          $this->saveUser();
         } catch (\PDOException $e) {
             Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
             if (App::getConf()->debug)

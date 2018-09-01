@@ -85,14 +85,12 @@ class LeaderboardCtrl {
                   ]);
 
                   //zwraca id wszystkich osób, którzy brali jakikolwiek udział w dowolnym sezonie
-                  $conditionalToSearch = App::getDB()->select("tracker", [
+                  $tmp = App::getDB()->select("tracker", [
                        "user_id"
                    ]);
 
                    //konwersja tablicy wielowymiarowej do dwuwymiarowej, gdyż medoo nie przyjmuje wielowymiarowych
-                   foreach ($conditionalToSearch as $key => $value){
-                        $conditionalToSearch[$key] = $value['user_id'];
-                   }
+                  $conditionalToSearch = array_column($tmp, 'user_id');
 
                    //zwraca login tych, którzy nie brali udziału w obecnym sezonie
                   $this->selectableUsers = App::getDB()->select("user", [
@@ -207,6 +205,7 @@ class LeaderboardCtrl {
              ], [
                 "login" => $this->form->member
              ]);
+             $tmpId = array_column($tmpId, 'id');
 
              $tmpSeason = App::getDB()->select("season", [
                 "id"
@@ -214,12 +213,13 @@ class LeaderboardCtrl {
                 "active" => 1,
                 "party_id" => $this->user->party_id
              ]);
+             $tmpSeason = array_column($tmpSeason, 'id');
 
             App::getDB()->insert("tracker", [
-            	"user_id" => $tmpId[0]["id"],
+            	"user_id" => $tmpId[0],
             	"wins" => 0,
             	"amount" => 0,
-              "season_id" => $tmpSeason[0]["id"]
+              "season_id" => $tmpSeason[0]
             ]);
           } else {
               Utils::addErrorMessage('Nie ma takiego członka w party');
@@ -255,6 +255,18 @@ class LeaderboardCtrl {
             $this->form->partyName = App::getDB()->get("party", "name", [
                 "id" => $this->user->party_id
             ]);
+
+            /*Jeśli nie jest utworzony sezon dla grupy, to przekierowuje go do
+              akcji seasonManagement, gdzie może w/w sezon utworzyć. Bez takiego
+              sezonu aplikacja się wysypuje przy dodawanu nowych użytkowników do
+              tabeli. (przez konstrukcję bazy)*/
+              if(!App::getDB()->has("season", [
+              	"party_id" => $this->user->party_id
+              ]) && $this->user->role_id != 3) {
+                echo '<script type="text/javascript">
+                     window.location = "seasonManagement"
+                </script>';
+              }
         }
         $this->saveUser();
     }
@@ -280,7 +292,7 @@ class LeaderboardCtrl {
             Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
         } else if (isset($this->form->newPartyName) && !empty($this->form->newPartyName)) {
             try {
-                //Dodanie nowego party do tabeli "party"
+                // Dodanie nowego party do tabeli "party"
                 App::getDB()->insert("party", [
                     "name" => $this->form->newPartyName
                 ]);
@@ -292,32 +304,39 @@ class LeaderboardCtrl {
                     "name" => $this->form->newPartyName
                 ]);
 
-                //Zaktualizowanie informacji w tabeli "user" o party danego użytkownika
-                App::getDB()->update("user", [
-                    "party_id" => $this->user->party_id,
-                    "role_id" => 2, //rola moderatora
-                    "party_member_since" => date("Y-m-d H:i:s")
-                        ], [
-                    "id" => $this->user->id
-                ]);
+                if(RoleUtils::inRole('admin')) {
+                  App::getDB()->update("user", [
+                      "party_id" => $this->user->party_id,
+                      "party_member_since" => date("Y-m-d H:i:s")
+                          ], [
+                      "id" => $this->user->id
+                  ]);
+                } else {
+                  // Zaktualizowanie informacji w tabeli "user" o party danego użytkownika
+                  App::getDB()->update("user", [
+                      "party_id" => $this->user->party_id,
+                      "role_id" => 2, //rola moderatora
+                      "party_member_since" => date("Y-m-d H:i:s")
+                          ], [
+                      "id" => $this->user->id
+                  ]);
 
-                //Zapisanie roli do sesji
-                $this->user->role_id = 2;
-                $this->user->role = App::getDB()->get("role", "role", [
-                    "id" => $this->user->role_id
-                ]);
+                  //Zapisanie roli do sesji
+                  $this->user->role_id = 2;
+                  $this->user->role = App::getDB()->get("role", "role", [
+                      "id" => $this->user->role_id
+                  ]);
+                  RoleUtils::removeRole('user');
+                  RoleUtils::addRole('moderator');
+                }
                 $this->saveUser();
-                RoleUtils::removeRole('user');
-                RoleUtils::addRole('moderator');
-                App::getRouter()->forwardTo('leaderboard');
             } catch (\PDOException $e) {
                 Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }
         }
-
-        $this->generateView();
+        App::getRouter()->forwardTo('leaderboard');
     }
 
     public function action_joinParty() {
