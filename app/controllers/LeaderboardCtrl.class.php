@@ -262,7 +262,7 @@ class LeaderboardCtrl {
               tabeli. (przez konstrukcję bazy)*/
               if(!App::getDB()->has("season", [
               	"party_id" => $this->user->party_id
-              ]) && $this->user->role_id != 3) {
+              ]) && !($this->user->role_id == 3)) {
                 echo '<script type="text/javascript">
                      window.location = "seasonManagement"
                 </script>';

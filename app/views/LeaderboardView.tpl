@@ -11,7 +11,8 @@
         Party: {$partyName}
         {if $user->role == moderator OR $user->role == admin}
           <div id="modpanel" class="pure-menu-list">
-            <a href="{$conf->action_root}seasonManagement" class="pure-menu pure-menu-link">Zarządzanie sezonem</a>
+            <a href="{$conf->action_root}seasonManagement" class="pure-menu pure-menu-link">Season management</a>
+            <a href="{$conf->action_root}modManagement" class="pure-menu pure-menu-link">Pass moderator</a>
           </div>
           <table class="pure-table pure-table-bordered">
               <thead>

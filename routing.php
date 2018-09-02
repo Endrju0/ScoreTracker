@@ -24,6 +24,8 @@ Utils::addRoute('seasonManagement',  'SeasonManagementCtrl',	['moderator','admin
 Utils::addRoute('newSeason',  'SeasonManagementCtrl',	['moderator','admin']);
 Utils::addRoute('setActiveSeason',  'SeasonManagementCtrl',	['moderator','admin']);
 Utils::addRoute('deleteSeason',  'SeasonManagementCtrl',	['moderator','admin']);
+Utils::addRoute('modManagement',  'ModManagementCtrl',	['moderator','admin']);
+Utils::addRoute('passMod',  'ModManagementCtrl',	['moderator','admin']);
 Utils::addRoute('profile',  'ProfileCtrl',	['user','moderator','admin']);
 Utils::addRoute('leaveParty',  'ProfileCtrl',	['user','moderator','admin']);
 Utils::addRoute('personNew',     'PersonEditCtrl',	['admin']);
