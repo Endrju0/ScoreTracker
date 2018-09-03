@@ -28,8 +28,22 @@ class LeaderboardCtrl {
       SessionUtils::storeObject('user', $this->user);
     }
 
+    private function aasort (&$array, $key) {
+      $sorter=array();
+      $ret=array();
+      reset($array);
+      foreach ($array as $ii => $va) {
+        $sorter[$ii]=$va[$key];
+      }
+      asort($sorter);
+      foreach ($sorter as $ii => $va) {
+        $ret[$ii]=$array[$ii];
+      }
+      $array=$ret;
+    }
+
     /*pobranie zawartości tabeli wyników i przekazanie jej do $this->form->trackerList*/
-    public function action_leaderboard() {
+    public function table() {
         $this->checkParty();
           try {
               $this->loadUser();
@@ -111,9 +125,8 @@ class LeaderboardCtrl {
               if (App::getConf()->debug)
                   Utils::addErrorMessage($e->getMessage());
           }
-
-        $this->generateView();
     }
+
 
     public function action_incWins() { //zwiększenie wygranych o 1
       $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
@@ -177,7 +190,64 @@ class LeaderboardCtrl {
               "id" => $this->form->id
             ]);
       }
+
       App::getRouter()->forwardTo('leaderboard');
+    }
+
+    public function action_leaderboard() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "login");
+      App::getSmarty()->assign('trackerList', $this->form->trackerList);
+      $this->generateView();
+    }
+
+    public function action_sortDescLogin() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "login");
+      App::getSmarty()->assign('trackerList', array_reverse($this->form->trackerList));
+      $this->generateView();
+    }
+
+    public function action_sortDescWins() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "wins");
+      App::getSmarty()->assign('trackerList', array_reverse($this->form->trackerList));
+      $this->generateView();
+    }
+
+    public function action_sortAscWins() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "wins");
+      App::getSmarty()->assign('trackerList', $this->form->trackerList);
+      $this->generateView();
+    }
+
+    public function action_sortDescAmount() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "amount");
+      App::getSmarty()->assign('trackerList', array_reverse($this->form->trackerList));
+      $this->generateView();
+    }
+
+    public function action_sortAscAmount() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "amount");
+      App::getSmarty()->assign('trackerList', $this->form->trackerList);
+      $this->generateView();
+    }
+
+    public function action_sortDescWr() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "win_ratio");
+      App::getSmarty()->assign('trackerList', array_reverse($this->form->trackerList));
+      $this->generateView();
+    }
+
+    public function action_sortAscWr() {
+      $this->table();
+      $this->aasort($this->form->trackerList, "win_ratio");
+      App::getSmarty()->assign('trackerList', $this->form->trackerList);
+      $this->generateView();
     }
 
     public function action_addMemberToSeason() {
@@ -374,10 +444,19 @@ class LeaderboardCtrl {
         App::getRouter()->forwardTo('leaderboard');
     }
 
+    public function action_stats() {
+      $this->table();
+      App::getSmarty()->assign('partyName', $this->form->partyName);
+      $this->aasort($this->form->trackerList, "amount");
+      App::getSmarty()->assign('trackerList', $this->form->trackerList);
+      App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
+      App::getSmarty()->display('StatsView.tpl');
+    }
+
     public function generateView() {
         App::getSmarty()->assign('partyName', $this->form->partyName);
         App::getSmarty()->assign('partyList', $this->form->partyList);
-        App::getSmarty()->assign('trackerList', $this->form->trackerList);
+        // App::getSmarty()->assign('trackerList', $this->form->trackerList);
         App::getSmarty()->assign('selectableUsers', $this->selectableUsers);
         App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('LeaderboardView.tpl');

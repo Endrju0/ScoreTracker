@@ -17,17 +17,22 @@
         <div class="navbar">
             <a class="logo">ScoreTracker</a>
             <a href="{$conf->action_root}leaderboard">Leaderboard</a>
-            {if isset($user->role) and $user->role == 'admin'}<a href="{$conf->action_root}personList" class="pure-menu-heading pure-menu-link">Lista</a> {/if}
-            <a href="{$conf->action_root}profile">Profil</a>
+            {if isset($user->role) and $user->role == 'admin'}
+              <a href="{$conf->action_root}personList" class="pure-menu-heading pure-menu-link">Lista</a>
+            {/if}
+            {if isset($user->party_id)}
+            <a href="{$conf->action_root}stats">Stats</a>
+            {/if}
+            <a href="{$conf->action_root}profile">Profile</a>
             <div class="navbar-right">
             {if count($conf->roles)>0}
-              <a href="{$conf->action_root}logout">Wyloguj</a>
+              <a href="{$conf->action_root}logout">Logout</a>
             {else}
-              <a href="{$conf->action_root}loginShow">Zaloguj</a>
+              <a href="{$conf->action_root}loginShow">Login</a>
             {/if}
             </div>
+          </div>
         {/if}
-        </div>
 
         <div id="content">
           {block name=top}

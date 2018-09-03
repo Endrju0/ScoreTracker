@@ -131,7 +131,7 @@ class ProfileCtrl {
         $this->generateView();
     }
 
-    public function generateGravatarUrl() {
+    private function generateGravatarUrl() {
       $this->loadUser();
       return $gravatarUrl = 'http://gravatar.com/avatar/'.md5($this->user->email).'?d=monsterid&s=200';
     }

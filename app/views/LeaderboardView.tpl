@@ -17,10 +17,34 @@
           <table class="pure-table pure-table-bordered">
               <thead>
                   <tr>
-                      <th>Login</th>
-                      <th colspan="3">Wins</th>
-                      <th colspan="3">Amount</th>
-                      <th>Win Ratio</th>
+                      <th>
+                        <form action="{$conf->action_root}leaderboard">
+                        Login
+                        <input type="submit" value="▲">
+                        <input type="submit" formaction="{$conf->action_root}sortDescLogin" value="▼">
+                      </form>
+                    </th>
+                    <th colspan="3">
+                      <form action="{$conf->action_root}sortAscWins">
+                        Wins
+                        <input type="submit" value="▲">
+                        <input type="submit" formaction="{$conf->action_root}sortDescWins" value="▼">
+                      </form>
+                    </th>
+                      <th colspan="3">
+                        <form action="{$conf->action_root}sortAscAmount">
+                          Amount
+                          <input type="submit" value="▲">
+                          <input type="submit" formaction="{$conf->action_root}sortDescAmount" value="▼">
+                        </form>
+                      </th>
+                      <th>
+                        <form action="{$conf->action_root}sortAscWr">
+                          Win Ratio
+                          <input type="submit" value="▲">
+                          <input type="submit" formaction="{$conf->action_root}sortDescWr" value="▼">
+                        </form>
+                      </th>
                   </tr>
               </thead>
               <tbody>
