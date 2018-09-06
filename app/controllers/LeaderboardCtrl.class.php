@@ -444,19 +444,27 @@ class LeaderboardCtrl {
         App::getRouter()->forwardTo('leaderboard');
     }
 
-    public function action_stats() {
+    public function action_chartAmount() {
       $this->table();
       App::getSmarty()->assign('partyName', $this->form->partyName);
       $this->aasort($this->form->trackerList, "amount");
-      App::getSmarty()->assign('trackerList', $this->form->trackerList);
+      App::getSmarty()->assign('data', $this->form->trackerList);
       App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
-      App::getSmarty()->display('StatsView.tpl');
+      App::getSmarty()->display('ChartAmountView.tpl');
+    }
+
+    public function action_chartWinRatio() {
+      $this->table();
+      App::getSmarty()->assign('partyName', $this->form->partyName);
+      $this->aasort($this->form->trackerList, "win_ratio");
+      App::getSmarty()->assign('data', array_reverse($this->form->trackerList));
+      App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
+      App::getSmarty()->display('ChartWinRatioView.tpl');
     }
 
     public function generateView() {
         App::getSmarty()->assign('partyName', $this->form->partyName);
         App::getSmarty()->assign('partyList', $this->form->partyList);
-        // App::getSmarty()->assign('trackerList', $this->form->trackerList);
         App::getSmarty()->assign('selectableUsers', $this->selectableUsers);
         App::getSmarty()->assign('user',unserialize(ParamUtils::getFromSession('user')));
         App::getSmarty()->display('LeaderboardView.tpl');

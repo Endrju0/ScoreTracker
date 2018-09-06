@@ -23,9 +23,9 @@
       		axisYType: "secondary",
       		color: "#014D65",
       		dataPoints: [
-            {foreach $trackerList as $t}
+            {foreach $data as $d}
                 {strip}
-          			   { y: {$t['amount']}, label: "{$t['login']}" },
+          			   { y: {$d['amount']}, label: "{$d['login']}" },
                 {/strip}
             {/foreach}
       		]
@@ -35,7 +35,7 @@
 
       }
     </script>
-    
+
 {/block}
 
 {block name=bottom}

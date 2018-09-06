@@ -9,11 +9,15 @@
 {block name=bottom}
     {if $partyName != null}
         Party: {$partyName}
+        <div id="modpanel" class="pure-menu-list">
+          {if $user->role == moderator OR $user->role == admin}
+          <a href="{$conf->action_root}seasonManagement" class="pure-menu pure-menu-link">Season management</a>
+          <a href="{$conf->action_root}modManagement" class="pure-menu pure-menu-link">Pass moderator</a>
+          {/if}
+          <a href="{$conf->action_root}chartAmount" class="pure-menu pure-menu-link">Amount of games chart</a>
+          <a href="{$conf->action_root}chartWinRatio" class="pure-menu pure-menu-link">Win ratio</a>
+        </div>
         {if $user->role == moderator OR $user->role == admin}
-          <div id="modpanel" class="pure-menu-list">
-            <a href="{$conf->action_root}seasonManagement" class="pure-menu pure-menu-link">Season management</a>
-            <a href="{$conf->action_root}modManagement" class="pure-menu pure-menu-link">Pass moderator</a>
-          </div>
           <table class="pure-table pure-table-bordered">
               <thead>
                   <tr>
@@ -95,10 +99,34 @@
         <table class="pure-table pure-table-bordered">
             <thead>
                 <tr>
-                    <th>Login</th>
-                    <th>Wins</th>
-                    <th>Amount</th>
-                    <th>Win Ratio</th>
+                    <th>
+                      <form action="{$conf->action_root}leaderboard">
+                      Login
+                      <input type="submit" value="▲">
+                      <input type="submit" formaction="{$conf->action_root}sortDescLogin" value="▼">
+                    </form>
+                  </th>
+                  <th>
+                    <form action="{$conf->action_root}sortAscWins">
+                      Wins
+                      <input type="submit" value="▲">
+                      <input type="submit" formaction="{$conf->action_root}sortDescWins" value="▼">
+                    </form>
+                  </th>
+                    <th>
+                      <form action="{$conf->action_root}sortAscAmount">
+                        Amount
+                        <input type="submit" value="▲">
+                        <input type="submit" formaction="{$conf->action_root}sortDescAmount" value="▼">
+                      </form>
+                    </th>
+                    <th>
+                      <form action="{$conf->action_root}sortAscWr">
+                        Win Ratio
+                        <input type="submit" value="▲">
+                        <input type="submit" formaction="{$conf->action_root}sortDescWr" value="▼">
+                      </form>
+                    </th>
                 </tr>
             </thead>
             <tbody>

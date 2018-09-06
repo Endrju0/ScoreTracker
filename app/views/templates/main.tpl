@@ -20,9 +20,6 @@
             {if isset($user->role) and $user->role == 'admin'}
               <a href="{$conf->action_root}personList" class="pure-menu-heading pure-menu-link">Lista</a>
             {/if}
-            {if isset($user->party_id)}
-            <a href="{$conf->action_root}stats">Stats</a>
-            {/if}
             <a href="{$conf->action_root}profile">Profile</a>
             <div class="navbar-right">
             {if count($conf->roles)>0}
