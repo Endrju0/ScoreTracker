@@ -8,6 +8,18 @@ body {
   padding: 20px;
 }
 
+#memberCell {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#memberList {
+  background-color: #E6E6E6;
+  border: 5px solid #E6E6E6;
+  width: 100%;
+  height: 100%;
+}
+
 .navbar {
   overflow: hidden;
   background-color: #F2F2F2;
@@ -60,6 +72,13 @@ a.logo:hover {
   .navbar-right {
     float: none;
   }
+  .msg {
+    border-radius: 0.2em;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    width: 100%;
+  }
+}
 
 .messages {}
 
@@ -69,22 +88,34 @@ a.logo:hover {
 }
 
 .msg {
-  border-radius: 0.5em;
-  padding: 1em;
+  border-radius: 0.2em;
+  padding: 0.5em;
   margin-bottom: 0.5em;
-  box-shadow: 0.2em 0.2em 0.4em #ccc;
+  max-width: 600px;
 }
 
 .error {
-  background-color: #f88;
+  background-color: #F2DEDE;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #EBCCD1;
+  color: #A94442;
 }
 
 .warning {
-  background-color: #fd2;
+  background-color: #FCF8E3;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #FAEBCC;
+  color: #8A6D3B;
 }
 
 .info {
-  background-color: #afa;
+  background-color: #DFF0D8;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #D6E9C6;
+  color: #3C763D;
 }
 
 .bottom-margin {
@@ -135,4 +166,17 @@ a.logo:hover {
 
 .button-xlarge {
   font-size: 125%;
+}
+
+.avatar-shape {
+  border-radius: 2%;
+}
+
+.avatar-image-cell {
+  vertical-align:middle;
+  margin-right: 0.5em;
+}
+
+.custom-restricted-width {
+    display: inline-block;
 }

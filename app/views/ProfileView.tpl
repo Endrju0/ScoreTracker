@@ -1,7 +1,7 @@
 {extends file="main.tpl"}
 
 {block name=bottom}
-    <img src="{$gravatar}" alt="avatar"/> </br>
+    <img src="{$gravatar}" alt="avatar" class="avatar-shape"/> </br>
     Login: {$user->login} </br>
     Role: {$user->role} </br>
     Last logged: {$user->last_login} </br>
@@ -14,7 +14,7 @@
         </form>
     {/if}
     </br></br>
-    
+
     <div>
       <div style="float:left; margin-right: 5px;">
         <img src="{$conf->app_url}/img/gravatar.svg" alt="Gravatar logo" height="40" width="40">

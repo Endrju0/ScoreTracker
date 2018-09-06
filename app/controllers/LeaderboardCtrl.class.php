@@ -66,6 +66,7 @@ class LeaderboardCtrl {
                   ], [
                     "tracker.id",
                     "user.login",
+                    "user.email",
                     "tracker.wins",
                     "tracker.amount"
                   ],[
@@ -81,6 +82,7 @@ class LeaderboardCtrl {
                   } else {
                     $this->form->trackerList[$i]['win_ratio'] = round($this->form->trackerList[$i]['wins'] / $this->form->trackerList[$i]['amount'],2,PHP_ROUND_HALF_DOWN);
                   }
+                  $this->form->trackerList[$i]['gravatar'] = 'http://gravatar.com/avatar/'.md5($this->form->trackerList[$i]['email']).'?d=monsterid&s=30';
                 }
           } catch (\PDOException $e) {
               Utils::addErrorMessage('Wystąpił błąd podczas sprawdzania party');

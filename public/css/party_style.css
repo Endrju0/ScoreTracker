@@ -106,15 +106,3 @@
 .container .info span .fa {
   color: #EF3B3A;
 }
-
-#memberCell {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#memberList {
-  background-color: #E6E6E6;
-  border: 5px solid #E6E6E6;
-  width: 100%;
-  height: 100%;
-}
