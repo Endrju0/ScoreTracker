@@ -22,33 +22,34 @@ class RegisterCtrl {
         $this->form->reg_login = $v->validateFromPost('reg_login', [
             'trim' => true,
             'required' => true,
-            'required_message' => 'Podaj login',
+            'required_message' => 'Enter the login.',
             'min_length' => 2,
             'max_length' => 30,
-            'validator_message' => 'Login powinno mieć od 2 do 30 znaków'
+            'validator_message' => 'Login should have between 2 to 30 characters.'
         ]);
 
         $this->form->reg_password = $v->validateFromPost('reg_password', [
             'trim' => true,
             'required' => true,
-            'required_message' => 'Podaj hasło',
+            'required_message' => 'Enter the password.',
             'min_length' => 2,
             'max_length' => 45,
-            'validator_message' => 'Hasło powinno mieć od 2 do 45 znaków'
+            'validator_message' => 'Password should have between 2 to 45 characters.'
         ]);
         $this->form->reg_email = $v->validateFromPost('reg_email', [
             'trim' => true,
             'required' => true,
-            'required_message' => "Wprowadź email",
+            'email' => true,
+            'required_message' => "Enter the email.",
             'max_length' => 45,
-            'validator_message' => "Email powinen mieć od 2 do 45 znaków"
+            'validator_message' => "Email should have between 2 to 45 characters."
         ]);
         if (App::getDB()->has("user", [
           "OR" => [
             "login" => $this->form->reg_login,
             "email" => $this->form->reg_email
           ]
-        ])) Utils::addErrorMessage('Nazwa użytkownika bądź email jest już zajęty!');
+        ])) Utils::addErrorMessage('Username or email is already taken!');
 
         return !App::getMessages()->isError();
     }
@@ -64,9 +65,9 @@ class RegisterCtrl {
                     "role_id" => 3,
                     "registration_date" => $this->form->reg_registration_date
                 ]);
-                Utils::addInfoMessage('Pomyślnie utworzono konto');
+                Utils::addInfoMessage('Account created successfully.');
             } catch (\PDOException $e) {
-                Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+                Utils::addErrorMessage('An unexpected error occurred during saving values to the database.');
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }

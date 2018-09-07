@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab);
 
 body {
   margin: 0;
@@ -6,6 +7,8 @@ body {
 
 #content {
   padding: 20px;
+  width:90%;
+  align-content: center;
 }
 
 #memberCell {
@@ -179,4 +182,59 @@ a.logo:hover {
 
 .custom-restricted-width {
     display: inline-block;
+}
+
+#profile {
+  height: 200px;
+  margin-bottom: 10px;
+}
+
+#profile-avatar {
+  width: 200px;
+  height: 100%;
+  float: left;
+}
+
+#profile-info {
+ float: left;
+ height: 100%;
+ padding-left: 10px;
+}
+
+#gravatar-info-container {
+  width:100%;
+  height: 50px;
+  padding: 5px;
+}
+
+#gravatar-info-logo {
+  margin-right: 5px;
+  height: 100%;
+  width: 40px;
+  float:left;
+}
+
+#gravatar-info-text {
+  float:left;
+  height: 100%;
+}
+
+#modpanel {
+  float: right;
+}
+
+.no-decoration {
+  border: none;
+  text-decoration: none;
+  background-color: inherit;
+}
+
+#title {
+  font-family: "Roboto", serif;
+  font-size: 36px;
+  margin-bottom: 0.5em;
+}
+
+#title b {
+  font-family: "Roboto Slab", serif;
 }

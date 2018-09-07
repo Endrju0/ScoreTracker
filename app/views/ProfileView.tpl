@@ -1,25 +1,52 @@
 {extends file="main.tpl"}
 
 {block name=bottom}
-    <img src="{$gravatar}" alt="avatar" class="avatar-shape"/> </br>
-    Login: {$user->login} </br>
-    Role: {$user->role} </br>
-    Last logged: {$user->last_login} </br>
-    {if !$isInParty}
-        Brak party
-    {else}
-        Party name: {$partyName} </br>
-        <form action="{$conf->action_root}leaveParty" method="post" class="register-form">
-            <button type="submit">leave party</button>
-        </form>
-    {/if}
-    </br></br>
+    <div id="profile">
+      <div id="profile-avatar">
+        <img src="{$gravatar}" alt="avatar" class="avatar-shape"/>
+      </div>
+      <div id="profile-info">
+        <table class="pure-table">
+          <tr>
+            <td>Login:</td>
+            <td>{$user->login}</td>
+          </tr>
+          <tr class="pure-table-odd">
+            <td>Role:</td>
+            <td>{$user->role}</td>
+          </tr>
+          <tr>
+            <td>Last logged:</td>
+            <td>{$user->last_login}</td>
+          </tr>
+        {if !$isInParty}
+            <tr class="pure-table-odd">
+              <td colspan="2">Brak party</td>
+            </tr>
+        {else}
+            <tr class="pure-table-odd">
+              <td>Party name:</td>
+              <td>{$partyName}</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <form action="{$conf->action_root}leaveParty" method="post" class="register-form">
+                    <button type="submit" class="pure-button pure-u-24-24">leave party</button>
+                </form>
+              </td>
+            </tr>
+        {/if}
+      </table>
+      </div>
+    </div>
 
-    <div>
-      <div style="float:left; margin-right: 5px;">
+    <div id="gravatar-info-container">
+      <div id="gravatar-info-logo">
         <img src="{$conf->app_url}/img/gravatar.svg" alt="Gravatar logo" height="40" width="40">
       </div>
+      <div id="gravatar-info-text">
         <b>Gravatar</b></br>
         Avatars are provided by Gravatar. To sign up for a free avatar, please <a href="https://pl.gravatar.com">visit Gravatar</a> now.
+      </div>
     </div>
 {/block}

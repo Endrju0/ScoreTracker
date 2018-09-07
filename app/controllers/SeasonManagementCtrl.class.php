@@ -43,7 +43,7 @@ class SeasonManagementCtrl {
     }
 
     public function action_setActiveSeason() { //ustawienie konkretnego sezonu jako aktywnego dla danej grupy
-      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'An unexpected error occured during setting active season.');
       if(!App::getMessages()->isError()) {
         $oldActiveSeasonId = App::getDB()->get("season", "id", [
           "AND" => [
@@ -66,7 +66,7 @@ class SeasonManagementCtrl {
     }
 
     public function action_deleteSeason() { //usuwanie konkretnego sezonu
-      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'An unexpected error occured during deleting season.');
       try {
         if(!App::getMessages()->isError()) {
           //Usunięcie wszystkich wpisów z wynikami z tabeli tracker

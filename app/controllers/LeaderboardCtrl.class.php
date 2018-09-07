@@ -28,6 +28,7 @@ class LeaderboardCtrl {
       SessionUtils::storeObject('user', $this->user);
     }
 
+    /*funkcja sortująca tablice*/
     private function aasort (&$array, $key) {
       $sorter=array();
       $ret=array();
@@ -42,7 +43,8 @@ class LeaderboardCtrl {
       $array=$ret;
     }
 
-    /*pobranie zawartości tabeli wyników i przekazanie jej do $this->form->trackerList*/
+    /*pobranie zawartości tabeli wyników i przekazanie jej do
+     $this->form->trackerList*/
     public function table() {
         $this->checkParty();
           try {
@@ -85,7 +87,7 @@ class LeaderboardCtrl {
                   $this->form->trackerList[$i]['gravatar'] = 'http://gravatar.com/avatar/'.md5($this->form->trackerList[$i]['email']).'?d=monsterid&s=30';
                 }
           } catch (\PDOException $e) {
-              Utils::addErrorMessage('Wystąpił błąd podczas sprawdzania party');
+              Utils::addErrorMessage('An unexpected error occurred during fetching values to the table.');
               if (App::getConf()->debug)
                   Utils::addErrorMessage($e->getMessage());
           }
@@ -123,7 +125,7 @@ class LeaderboardCtrl {
                   ]);
 
           } catch (\PDOException $e) {
-              Utils::addErrorMessage('Wystąpił błąd podczas sprawdzania party');
+              Utils::addErrorMessage('An unexpected error occurred during fetching values to the table.');
               if (App::getConf()->debug)
                   Utils::addErrorMessage($e->getMessage());
           }
@@ -131,7 +133,7 @@ class LeaderboardCtrl {
 
 
     public function action_incWins() { //zwiększenie wygranych o 1
-      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Incorrect application call during increasing wins value.');
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
               "wins[+]" => 1,
@@ -144,7 +146,7 @@ class LeaderboardCtrl {
     }
 
     public function action_incAmount() { //zwiększenie liczby gier o 1
-      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Incorrect application call during increasing amount of games value.');
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
               "amount[+]" => 1
@@ -157,13 +159,13 @@ class LeaderboardCtrl {
 
     public function action_decWins() { //zmniejszenie wygranych o 1
       //pobranie id rekordu z tabeli 'tracker', który będziemy aktualizować
-      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Incorrect application call during decreasing  wins value.');
       //pobranie ilości wygranych
-      $validateValue = ParamUtils::getFromPost('validateValue', true, 'Błędne wywołanie aplikacji');
+      $validateValue = ParamUtils::getFromPost('validateValue', true, 'Incorrect application call during increasing wins value (validation error).');
 
       //jeśli wygranych jest mniej niż 1 to kończymy akcję
       if($validateValue < 1)
-      Utils::addErrorMessage('Ilość wygranych nie może być mniejsza od 0!');
+      Utils::addErrorMessage('Amount of wins cannot be smaller than 1!');
 
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
@@ -177,13 +179,13 @@ class LeaderboardCtrl {
 
     public function action_decAmount() { //zmniejszenie liczby gier o 1
       //pobranie id rekordu z tabeli 'tracker', który będziemy aktualizować
-      $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+      $this->form->id = ParamUtils::getFromPost('id', true, 'Incorrect application call during decreasing amount of games value.');
       //pobranie ilości gier
-      $validateValue = ParamUtils::getFromPost('validateValue', true, 'Błędne wywołanie aplikacji');
+      $validateValue = ParamUtils::getFromPost('validateValue', true, 'Incorrect application call during decreasing amount of games value (validation error).');
 
       //jeśli gier jest mniej niż 1 to kończymy akcję
       if($validateValue < 1)
-      Utils::addErrorMessage('Ilość gier nie może być mniejsza od 0!');
+      Utils::addErrorMessage('Amount of games cannot be smaller than 1!');
 
       if(!App::getMessages()->isError()) {
         $this->form->trackerList = App::getDB()->update("tracker", [
@@ -258,10 +260,10 @@ class LeaderboardCtrl {
       $this->form->member = $v->validateFromPost('memberList', [
           'trim' => true,
           'required' => true,
-          'required_message' => 'Podaj login członka',
+          'required_message' => 'Enter login of member of this party',
           'min_length' => 2,
           'max_length' => 30,
-          'validator_message' => 'Login powinien mieć od 2 do 30 znaków'
+          'validator_message' => 'Login should have between 2 to 30 characters'
       ]);
       try {
           $this->loadUser();
@@ -294,10 +296,10 @@ class LeaderboardCtrl {
               "season_id" => $tmpSeason[0]
             ]);
           } else {
-              Utils::addErrorMessage('Nie ma takiego członka w party');
+              Utils::addErrorMessage("User with that login isn't member of this party ");
           }
       } catch (\PDOException $e) {
-          Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+          Utils::addErrorMessage('An unexpected error occurred during saving records to the database.');
           if (App::getConf()->debug)
               Utils::addErrorMessage($e->getMessage());
       }
@@ -318,7 +320,7 @@ class LeaderboardCtrl {
                     "name"
                 ]);
             } catch (\PDOException $e) {
-                Utils::addErrorMessage('Wystąpił błąd podczas sprawdzania party');
+                Utils::addErrorMessage('An unexpected error occured during checking the party.');
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }
@@ -350,25 +352,25 @@ class LeaderboardCtrl {
         $this->form->newPartyName = $v->validateFromPost('newPartyName', [
             'trim' => true,
             'required' => true,
-            'required_message' => 'Podaj nazwę party',
+            'required_message' => 'Enter name of the party',
             'min_length' => 2,
             'max_length' => 45,
-            'validator_message' => 'Party powinno mieć od 2 do 45 znaków'
+            'validator_message' => 'Party name should have between 2 to 30 characters'
         ]);
 
-        /*Sprawdzamy czy takie party istnieje, jeśli tak to przechodzimy do
-          wyświetlenia widoku*/
+        /*Sprawdzamy czy takie party istnieje, jeśli nie to przechodzimy do
+          jego utworzenia.*/
         if (App::getDB()->count("party", [
                     "name" => $this->form->newPartyName
                 ]) > 0) {
-            Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
+            Utils::addErrorMessage("Party with that name already exists.");
         } else if (isset($this->form->newPartyName) && !empty($this->form->newPartyName)) {
             try {
                 // Dodanie nowego party do tabeli "party"
                 App::getDB()->insert("party", [
                     "name" => $this->form->newPartyName
                 ]);
-                Utils::addInfoMessage('Pomyślnie utworzono party');
+                Utils::addInfoMessage('Party creation succeeded.');
                 $this->loadUser();
 
                 //Pobranie id od party o danej nazwie
@@ -403,7 +405,7 @@ class LeaderboardCtrl {
                 }
                 $this->saveUser();
             } catch (\PDOException $e) {
-                Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+                Utils::addErrorMessage('An unexpected error occurred during saving records to the database.');
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }
@@ -436,10 +438,10 @@ class LeaderboardCtrl {
                 ]);
                 $this->saveUser();
             } else {
-                Utils::addErrorMessage('Party o takiej nazwie nie istnieje!');
+                Utils::addErrorMessage("Party with that name doesn't exists.");
             }
         } catch (\PDOException $e) {
-            Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+            Utils::addErrorMessage('An unexpected error occurred during saving records to the database.');
             if (App::getConf()->debug)
                 Utils::addErrorMessage($e->getMessage());
         }

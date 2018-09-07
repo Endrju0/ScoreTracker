@@ -119,8 +119,9 @@ class ProfileCtrl {
           }
           $this->user->party_id = NULL;
           $this->saveUser();
+          Utils::addInfoMessage('You left party successfully.');
         } catch (\PDOException $e) {
-            Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+            Utils::addErrorMessage('An unexpected error occurred during leaving party (database error).');
             if (App::getConf()->debug)
                 Utils::addErrorMessage($e->getMessage());
         }

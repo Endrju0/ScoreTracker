@@ -17,28 +17,9 @@ class PersonEditCtrl {
         $this->form = new PersonEditForm();
     }
 
-    /* Walidacja danych przed zapisem (nowe dane lub edycja).
-     * Poniżej pełna, możliwa konfiguracja metod walidacji:
-     *  [
-     *    'trim' => true,
-     *    'required' => true,
-     *    'required_message' => 'message...',
-     *    'min_length' => value,
-     *    'max_length' => value,
-     *    'email' => true,
-     *    'numeric' => true,
-     *    'int' => true,
-     *    'float' => true,
-     *    'date_format' => format,
-     *    'regexp' => expression,
-     *    'validator_message' => 'message...',
-     *    'message_type' => error | warning | info,
-     *  ]
-     */
-
     public function validateSave() {
         //Pobranie id z walidacją czy istnieje (isset)
-        $this->form->id = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+        $this->form->id = ParamUtils::getFromPost('id', true, 'Incorrect application call during validation.');
 
         // Używaj ParamUtils::getFromXXX('param',true,"...") do sprawdzenia czy parametr
         // został przesłany, -  czy ISTNIEJE (isset) - może być pusty, ale jest
@@ -49,10 +30,10 @@ class PersonEditCtrl {
         $this->form->login = $v->validateFromPost('login', [
             'trim' => true,
             'required' => true,
-            'required_message' => 'Podaj login',
+            'required_message' => 'Enter the login.',
             'min_length' => 2,
             'max_length' => 30,
-            'validator_message' => 'Login powinno mieć od 2 do 30 znaków'
+            'validator_message' => 'Login should have between 2 to 30 characters.'
         ]);
 
         // Używaj walidatora z konfiguracją "'required' => true" aby sprawdzić,
@@ -61,16 +42,16 @@ class PersonEditCtrl {
         $this->form->password = $v->validateFromPost('password', [
             'trim' => true,
             'required' => true,
-            'required_message' => 'Podaj hasło',
+            'required_message' => 'Enter the password.',
             'min_length' => 2,
             'max_length' => 45,
-            'validator_message' => 'Hasło powinno mieć od 2 do 45 znaków'
+            'validator_message' => 'Password should have between 2 to 45 characters.'
         ]);
         $this->form->email = $v->validateFromPost('email', [
             'trim' => true,
-            'required_message' => "Wprowadź email",
+            'required_message' => "Enter the email.",
             'max_length' => 45,
-            'validator_message' => "Email powinen mieć od 2 do 45 znaków"
+            'validator_message' => "Email should have between 2 to 45 characters."
         ]);
         return !App::getMessages()->isError();
     }
@@ -79,7 +60,7 @@ class PersonEditCtrl {
     public function validateEdit() {
         //pobierz parametry na potrzeby wyswietlenia danych do edycji
         //z widoku listy osób (parametr jest wymagany)
-        $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Błędne wywołanie aplikacji');
+        $this->form->id = ParamUtils::getFromCleanURL(1, true, 'Incorrect application call during validation.');
         return !App::getMessages()->isError();
     }
 
@@ -102,7 +83,7 @@ class PersonEditCtrl {
                 $this->form->password = $record['password'];
                 $this->form->email = $record['email'];
             } catch (\PDOException $e) {
-                Utils::addErrorMessage('Wystąpił błąd podczas odczytu rekordu');
+                Utils::addErrorMessage('An unexpected error occurred during fetching values from database.');
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }
@@ -121,9 +102,9 @@ class PersonEditCtrl {
                 App::getDB()->delete("user", [
                     "id" => $this->form->id
                 ]);
-                Utils::addInfoMessage('Pomyślnie usunięto rekord');
+                Utils::addInfoMessage('Person deleted successfully.');
             } catch (\PDOException $e) {
-                Utils::addErrorMessage('Wystąpił błąd podczas usuwania rekordu');
+                Utils::addErrorMessage('An unexpected error occurred during deleting values from database.');
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }
@@ -154,7 +135,7 @@ class PersonEditCtrl {
                         ]);
                     } else { //za dużo rekordów
                         // Gdy za dużo rekordów to pozostań na stronie
-                        Utils::addInfoMessage('Ograniczenie: Zbyt dużo rekordów. Aby dodać nowy usuń wybrany wpis.');
+                        Utils::addInfoMessage('Restriction: Too many records. To add new one, delete older record.');
                         $this->generateView(); //pozostań na stronie edycji
                         exit(); //zakończ przetwarzanie, aby nie dodać wiadomości o pomyślnym zapisie danych
                     }
@@ -168,9 +149,9 @@ class PersonEditCtrl {
                         "id" => $this->form->id
                     ]);
                 }
-                Utils::addInfoMessage('Pomyślnie zapisano rekord');
+                Utils::addInfoMessage('Record saved successfully.');
             } catch (\PDOException $e) {
-                Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+                Utils::addErrorMessage('An unexpected error occurred during saving values to the database.');
                 if (App::getConf()->debug)
                     Utils::addErrorMessage($e->getMessage());
             }

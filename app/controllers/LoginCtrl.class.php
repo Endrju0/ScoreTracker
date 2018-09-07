@@ -37,7 +37,7 @@ class LoginCtrl {
                 "date[<>]" => [date('Y-m-d H:i:s', strtotime('-5 minutes')), date("Y-m-d H:i:s")]
           		]
             ]) > 4) {
-              Utils::addErrorMessage('Zbyt wiele prób logowania. Poczekaj 5 minut.');
+              Utils::addErrorMessage('Too many login attempts. Wait few minutes.');
             }
         }
 
@@ -47,10 +47,10 @@ class LoginCtrl {
 
         // sprawdzenie, czy potrzebne wartości zostały przekazane
         if (empty($this->form->login)) {
-            Utils::addErrorMessage('Nie podano loginu');
+            Utils::addErrorMessage('Enter the login.');
         }
         if (empty($this->form->pass)) {
-            Utils::addErrorMessage('Nie podano hasła');
+            Utils::addErrorMessage('Enter the password.');
         }
 
         //nie ma sensu walidować dalej, gdy brak wartości
@@ -117,10 +117,10 @@ class LoginCtrl {
                 "browser" => Browser::exactBrowserName(),
                 "ip" => Browser::getIpAddress()
             ]);
-          	Utils::addErrorMessage('Niepoprawny login lub hasło');
+          	Utils::addErrorMessage('Incorrect login or password.');
           }
       } catch (\PDOException $e) {
-          Utils::addErrorMessage('Wystąpił nieoczekiwany błąd podczas zapisu rekordu');
+          Utils::addErrorMessage('An unexpected error occurred during saving records to the database.');
           if (App::getConf()->debug)
               Utils::addErrorMessage($e->getMessage());
       }
@@ -134,8 +134,7 @@ class LoginCtrl {
 
     public function action_login() {
         if ($this->validate()) {
-            //zalogowany => przekieruj na główną akcję (z przekazaniem messages przez sesję)
-            Utils::addErrorMessage('Poprawnie zalogowano do systemu');
+            //zalogowany => przekieruj na główną akcję
             App::getRouter()->redirectTo("leaderboard");
         } else {
             //niezalogowany => pozostań na stronie logowania

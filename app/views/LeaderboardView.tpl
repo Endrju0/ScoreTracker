@@ -1,17 +1,12 @@
 {extends file="main.tpl"}
 {block name=resources}
     <link rel="stylesheet" href="{$conf->app_url}/css/party_style.css">
-    <link rel="stylesheet" href="{$conf->app_url}/css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <style>
-
-    </style>
 {/block}
 
 {block name=bottom}
     {if $partyName != null}
-        Party: {$partyName}</br>
+        <div id="title"> Welcome fellow in <b>{$partyName}</b>!</div>
         <div id="modpanel" class="pure-menu-list custom-restricted-width">
           {if $user->role == moderator OR $user->role == admin}
           <a href="{$conf->action_root}seasonManagement" class="pure-menu pure-menu-link">Season management</a>
@@ -27,29 +22,29 @@
                       <th>
                         <form action="{$conf->action_root}leaderboard">
                         Login
-                        <input type="submit" value="▲">
-                        <input type="submit" formaction="{$conf->action_root}sortDescLogin" value="▼">
+                        <input type="submit" class="no-decoration" value="▲">
+                        <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescLogin" value="▼">
                       </form>
                     </th>
                     <th colspan="3">
                       <form action="{$conf->action_root}sortAscWins">
                         Wins
-                        <input type="submit" value="▲">
-                        <input type="submit" formaction="{$conf->action_root}sortDescWins" value="▼">
+                        <input type="submit" class="no-decoration" value="▲">
+                        <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescWins" value="▼">
                       </form>
                     </th>
                       <th colspan="3">
                         <form action="{$conf->action_root}sortAscAmount">
                           Amount
-                          <input type="submit" value="▲">
-                          <input type="submit" formaction="{$conf->action_root}sortDescAmount" value="▼">
+                          <input type="submit" class="no-decoration" value="▲">
+                          <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescAmount" value="▼">
                         </form>
                       </th>
                       <th>
                         <form action="{$conf->action_root}sortAscWr">
                           Win Ratio
-                          <input type="submit" value="▲">
-                          <input type="submit" formaction="{$conf->action_root}sortDescWr" value="▼">
+                          <input type="submit" class="no-decoration" value="▲">
+                          <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescWr" value="▼">
                         </form>
                       </th>
                   </tr>
@@ -108,29 +103,29 @@
                     <th>
                       <form action="{$conf->action_root}leaderboard">
                       Login
-                      <input type="submit" value="▲">
-                      <input type="submit" formaction="{$conf->action_root}sortDescLogin" value="▼">
+                      <input type="submit" class="no-decoration" value="▲">
+                      <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescLogin" value="▼">
                     </form>
                   </th>
                   <th>
                     <form action="{$conf->action_root}sortAscWins">
                       Wins
-                      <input type="submit" value="▲">
-                      <input type="submit" formaction="{$conf->action_root}sortDescWins" value="▼">
+                      <input type="submit" class="no-decoration" value="▲">
+                      <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescWins" value="▼">
                     </form>
                   </th>
                     <th>
                       <form action="{$conf->action_root}sortAscAmount">
                         Amount
-                        <input type="submit" value="▲">
-                        <input type="submit" formaction="{$conf->action_root}sortDescAmount" value="▼">
+                        <input type="submit" class="no-decoration" value="▲">
+                        <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescAmount" value="▼">
                       </form>
                     </th>
                     <th>
                       <form action="{$conf->action_root}sortAscWr">
                         Win Ratio
-                        <input type="submit" value="▲">
-                        <input type="submit" formaction="{$conf->action_root}sortDescWr" value="▼">
+                        <input type="submit" class="no-decoration" value="▲">
+                        <input type="submit" class="no-decoration" formaction="{$conf->action_root}sortDescWr" value="▼">
                       </form>
                     </th>
                 </tr>

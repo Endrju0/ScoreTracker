@@ -40,7 +40,7 @@ class ModManagementCtrl {
     }
 
     public function action_passMod() {
-        $chosenUserId = ParamUtils::getFromPost('id', true, 'Błędne wywołanie aplikacji');
+        $chosenUserId = ParamUtils::getFromPost('id', true, 'Incorrect application call during passing moderator role.');
         if(!App::getMessages()->isError()) {
           App::getDB()->update("user", [
                 "role_id" => 2

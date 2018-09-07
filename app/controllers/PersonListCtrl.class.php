@@ -63,7 +63,7 @@ class PersonListCtrl {
                 "email",
                     ], $where);
         } catch (\PDOException $e) {
-            Utils::addErrorMessage('Wystąpił błąd podczas pobierania rekordów');
+            Utils::addErrorMessage('An unexpected error occurred during fetching values from database.');
             if (App::getConf()->debug)
                 Utils::addErrorMessage($e->getMessage());
         }
