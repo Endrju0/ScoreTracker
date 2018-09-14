@@ -36,6 +36,12 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+@keyframes links {
+  0%   { color: #000; background-color: rgba(76,175,80, 0); } /* #4CAF50 == rgba(76,175,80, 0)*/
+  25% { color: #FFF; }
+  100% { background-color:rgba(76,175,80, 1); }
+}
+
 .navbar a {
   float: left;
   color: black;
@@ -45,6 +51,7 @@ body {
   font-size: 18px;
   line-height: 25px;
   border-radius: 2px;
+  transition: background-color 0.6s linear;
 }
 
 .navbar a.logo {
@@ -55,11 +62,20 @@ body {
 .navbar a:hover {
   background-color:#4CAF50;
   color: #FFFFFF;
+  transition: background-color 0.6s linear;
+}
+
+@keyframes logo-rotate-color {
+  0%   { transform: rotate(0); color: #000; }
+  25% { transform: rotate(10deg); color: #4CAF50;  }
+  75% { transform: rotate(-10deg); color: #4CAF50;  }
+  100% { transform: rotate(0); color: #000; }
 }
 
 a.logo:hover {
   background-color:#F2F2F2;
   color: black;
+  animation: logo-rotate-color 0.7s;
 }
 
 .navbar-right {
@@ -178,6 +194,14 @@ a.logo:hover {
 .avatar-image-cell {
   vertical-align:middle;
   margin-right: 0.5em;
+  width: 40px;
+  height: 40px;
+  transition: transform .5s;
+  transform-origin: left bottom;
+}
+
+.avatar-image-cell:hover {
+  transform: scale(3);
 }
 
 .custom-restricted-width {
