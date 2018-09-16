@@ -60,6 +60,8 @@ class LoginCtrl {
       /*Sprawdzenie czy zmienne z formularza istnieją w bazie oraz czy pasują do siebie,
         Jeśli wszystko jest poprawne to przydzielona jest odpowiednia rola użytkownikowi*/
       try {
+        $salt = 'ScoreTrackerProject';
+        $passwordHash = hash('SHA512', $this->form->pass . $salt);
           //sprawdzenie czy w bazie jest użytkownik z danym hasłem z formularza
           if (App::getDB()->has("user", [
           	"AND" => [
@@ -67,7 +69,7 @@ class LoginCtrl {
           			"login" => $this->form->login,
           			"email" => $this->form->login
           		],
-          		"password" => $this->form->pass
+          		"password" => $passwordHash
           	]
           ])) {
             //pobranie danych użytkownika po weryfikacji danych logowania
@@ -80,7 +82,7 @@ class LoginCtrl {
                         "last_login"
                       ], [
                       	"login" => $this->form->login,
-                        "password" => $this->form->pass
+                        "password" => $passwordHash
                       ]);
 
             //pobranie nazwy roli z tabeli 'role' po kluczu 'role_id' z tabeli 'user'

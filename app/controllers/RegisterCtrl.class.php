@@ -56,11 +56,12 @@ class RegisterCtrl {
 
     public function action_register() {
         if ($this->validate()) {
+            $salt = 'ScoreTrackerProject';
             $this->form->reg_registration_date = date('Y-m-d');
             try {
                 App::getDB()->insert("user", [
                     "login" => $this->form->reg_login,
-                    "password" => $this->form->reg_password,
+                    "password" => hash('SHA512', $this->form->reg_password . $salt),
                     "email" => $this->form->reg_email,
                     "role_id" => 3,
                     "registration_date" => $this->form->reg_registration_date
