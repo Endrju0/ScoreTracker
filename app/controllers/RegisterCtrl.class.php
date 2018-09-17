@@ -45,11 +45,12 @@ class RegisterCtrl {
             'validator_message' => "Email should have between 2 to 45 characters."
         ]);
         if (App::getDB()->has("user", [
-          "OR" => [
-            "login" => $this->form->reg_login,
-            "email" => $this->form->reg_email
-          ]
-        ])) Utils::addErrorMessage('Username or email is already taken!');
+                    "OR" => [
+                        "login" => $this->form->reg_login,
+                        "email" => $this->form->reg_email
+                    ]
+                ]))
+            Utils::addErrorMessage('Username or email is already taken!');
 
         return !App::getMessages()->isError();
     }

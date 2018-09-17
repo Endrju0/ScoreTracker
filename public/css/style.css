@@ -5,6 +5,10 @@ body {
   margin: 0;
 }
 
+.right {
+  align: right;
+}
+
 #content {
   padding: 20px;
   width:90%;
@@ -261,4 +265,19 @@ a.logo:hover {
 
 #title b {
   font-family: "Roboto Slab", serif;
+}
+
+#changePasswordForm {
+  width: 500px;
+}
+
+@media screen and (max-width: 500px) {
+  #changePasswordForm {
+    width: 100%;
+  }
+}
+
+#changePasswordBottomForm {
+  display: flex;
+  justify-content: space-between;
 }

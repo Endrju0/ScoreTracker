@@ -1,7 +1,6 @@
 {extends file="main.tpl"}
 
 {block name=bottom}
-        Party name: {$user->party_id} </br>
         {if $partyUserList != null}
           <table class="pure-table pure-table-bordered">
               <thead>

@@ -5,17 +5,17 @@
     <div class="bottom-margin">
         <form action="{$conf->action_root}personSave" method="post" class="pure-form pure-form-aligned">
             <fieldset>
-                <legend>Dane osoby</legend>
+                <legend>User data</legend>
                 <div class="pure-control-group">
-                    <label for="login">login</label>
+                    <label for="login">Login</label>
                     <input id="login" type="text" placeholder="login" name="login" value="{$form->login}">
                 </div>
                 <div class="pure-control-group">
-                    <label for="password">nazwisko</label>
-                    <input id="password" type="text" placeholder="password" name="password" value="{$form->password}">
+                    <label for="password">Password</label>
+                    <input id="password" type="text" placeholder="password" name="password">
                 </div>
                 <div class="pure-control-group">
-                    <label for="email">email</label>
+                    <label for="email">Email</label>
                     <input id="email" type="text" placeholder="email" name="email" value="{$form->email}">
                 </div>
                 <div class="pure-controls">

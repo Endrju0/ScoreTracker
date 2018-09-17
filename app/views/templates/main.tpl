@@ -18,7 +18,7 @@
             <a class="logo">ScoreTracker</a>
             <a href="{$conf->action_root}leaderboard">Leaderboard</a>
             {if isset($user->role) and $user->role == 'admin'}
-              <a href="{$conf->action_root}personList" class="pure-menu-heading pure-menu-link">Lista</a>
+              <a href="{$conf->action_root}personList" class="pure-menu-link">Users</a>
             {/if}
             <a href="{$conf->action_root}profile">Profile</a>
             <div class="navbar-right">

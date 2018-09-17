@@ -2,9 +2,8 @@
     <thead>
         <tr>
             <th>Login</th>
-            <th>Password</th>
             <th>Email</th>
-            <th>opcje</th>
+            <th>Options</th>
         </tr>
     </thead>
     <tbody>
@@ -12,7 +11,6 @@
             {strip}
                 <tr>
                     <td>{$p["login"]}</td>
-                    <td>{$p["password"]}</td>
                     <td>{$p["email"]}</td>
                     <td>
                         <a class="button-small pure-button button-secondary" href="{$conf->action_url}personEdit/{$p['id']}">Edytuj</a>

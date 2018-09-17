@@ -1,8 +1,6 @@
 {extends file="main.tpl"}
 
 {block name=bottom}
-        Party name: {$user->party_id} </br>
-
         <form class="pure-form pure-form-stacked" action="{$conf->action_root}newSeason" method="post">
           <fieldset>
            <div class="pure-u-1 pure-u-md-1-3">

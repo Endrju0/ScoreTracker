@@ -8,7 +8,7 @@ class Config extends \ArrayObject{
 	public $server_url;
 	public $app_root;
 	public $public_dir;
-	public $app_url; 
+	public $app_url;
 	public $action_param;
 	public $action_script;
 	public $action_root;

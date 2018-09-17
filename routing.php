@@ -35,6 +35,7 @@ Utils::addRoute('modManagement',  'ModManagementCtrl',	['moderator','admin']);
 Utils::addRoute('passMod',  'ModManagementCtrl',	['moderator','admin']);
 Utils::addRoute('profile',  'ProfileCtrl',	['user','moderator','admin']);
 Utils::addRoute('leaveParty',  'ProfileCtrl',	['user','moderator','admin']);
+Utils::addRoute('changePassword',  'ProfileCtrl',	['user','moderator','admin']);
 Utils::addRoute('chartAmount',  'LeaderboardCtrl',	['user','moderator','admin']);
 Utils::addRoute('chartWinRatio',  'LeaderboardCtrl',	['user','moderator','admin']);
 Utils::addRoute('personNew',     'PersonEditCtrl',	['admin']);
